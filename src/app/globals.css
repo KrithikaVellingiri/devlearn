@@ -1,26 +1,108 @@
 @import "tailwindcss";
 
+/* ============================================================
+   DEVLEARN DESIGN SYSTEM — Tailwind v4 CSS-first configuration
+   ============================================================ */
+
+@theme {
+  /* ── Colors ─────────────────────────────────────────────── */
+  --color-primary:        #4F46E5;
+  --color-primary-dark:   #3730A3;
+  --color-accent:         #06B6D4;
+  --color-background:     #0F172A;
+  --color-surface:        #1E293B;
+  --color-surface-light:  #F8FAFC;
+  --color-text-primary:   #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-border:         #334155;
+  --color-success:        #10B981;
+  --color-warning:        #F59E0B;
+  --color-danger:         #EF4444;
+
+  /* ── Spacing (8pt grid) ─────────────────────────────────── */
+  --spacing-1:  4px;
+  --spacing-2:  8px;
+  --spacing-3:  12px;
+  --spacing-4:  16px;
+  --spacing-6:  24px;
+  --spacing-8:  32px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+
+  /* ── Border Radius ──────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* ── Shadows ────────────────────────────────────────────── */
+  --shadow-card:     0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 10px 40px rgba(0, 0, 0, 0.5);
+
+  /* ── Typography ─────────────────────────────────────────── */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "Cascadia Code", monospace;
+}
+
+/* ============================================================
+   CSS CUSTOM PROPERTIES — Runtime design token access
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colors */
+  --dl-primary:        #4F46E5;
+  --dl-primary-dark:   #3730A3;
+  --dl-accent:         #06B6D4;
+  --dl-background:     #0F172A;
+  --dl-surface:        #1E293B;
+  --dl-surface-light:  #F8FAFC;
+  --dl-text-primary:   #F1F5F9;
+  --dl-text-secondary: #94A3B8;
+  --dl-border:         #334155;
+  --dl-success:        #10B981;
+  --dl-warning:        #F59E0B;
+  --dl-danger:         #EF4444;
+
+  /* Spacing */
+  --dl-space-1:  4px;
+  --dl-space-2:  8px;
+  --dl-space-3:  12px;
+  --dl-space-4:  16px;
+  --dl-space-6:  24px;
+  --dl-space-8:  32px;
+  --dl-space-12: 48px;
+  --dl-space-16: 64px;
+
+  /* Radius */
+  --dl-radius-sm: 6px;
+  --dl-radius-md: 10px;
+  --dl-radius-lg: 16px;
+  --dl-radius-xl: 24px;
+
+  /* Shadows */
+  --dl-shadow-card:     0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --dl-shadow-elevated: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0F172A;
+  color: #F1F5F9;
+
+  /* Premium font rendering */
+  -webkit-font-smoothing:  antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Smooth default transitions for interactive elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
