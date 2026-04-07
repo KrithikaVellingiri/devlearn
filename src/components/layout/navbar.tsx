@@ -1,21 +1,26 @@
 import React from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SearchBar } from "./search-bar";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export const Navbar = () => {
+export const Navbar = async () => {
+  const session = await getServerSession(authOptions);
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         
         <div className="flex items-center gap-8">
-          <a href="/" className="font-bold text-xl tracking-tight text-text-primary flex items-center gap-1">
+          <Link href="/" className="font-bold text-xl tracking-tight text-text-primary flex items-center gap-1">
             <span className="text-primary font-black">Dev</span>Learn
-          </a>
+          </Link>
           
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Courses</a>
-            <a href="#" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Learning Paths</a>
-            <a href="#" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Curriculum</a>
+            <Link href="#" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Courses</Link>
+            <Link href="#" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Learning Paths</Link>
+            <Link href="#" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Curriculum</Link>
           </nav>
         </div>
 
@@ -33,9 +38,26 @@ export const Navbar = () => {
             <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-primary rounded-full"></span>
           </Button>
 
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Sign in</Button>
-            <Button variant="primary" size="sm">Get Started</Button>
+          <div className="flex items-center gap-3">
+            {session ? (
+              <div className="flex items-center gap-4 ml-2">
+                <span className="text-sm font-semibold text-text-primary/80 hidden sm:inline-block">
+                  {session.user?.email}
+                </span>
+                <Link href="/api/auth/signout">
+                  <Button variant="secondary" size="sm">Logout</Button>
+                </Link>
+              </div>
+            ) : (
+              <>
+                <Link href="/api/auth/signin">
+                  <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Login</Button>
+                </Link>
+                <Link href="/api/auth/signin">
+                  <Button variant="primary" size="sm">Signup</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
