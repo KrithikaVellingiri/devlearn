@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SearchBar } from "./search-bar";
+import { CartButton } from "./cart-button";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
@@ -29,14 +30,7 @@ export const Navbar = async () => {
              <SearchBar />
           </div>
           
-          <Button variant="ghost" size="icon" className="relative hidden sm:flex text-text-primary/70 hover:text-text-primary" aria-label="Cart">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-primary rounded-full"></span>
-          </Button>
+          <CartButton />
 
           <div className="flex items-center gap-3">
             {session ? (

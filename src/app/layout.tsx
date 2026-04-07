@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 /* ── UI Font: Inter ────────────────────────────────────────── */
@@ -38,6 +39,9 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="antialiased font-sans">
         <Providers>{children}</Providers>
+        <Toaster position="bottom-right" theme="dark" toastOptions={{
+          style: { background: '#1c1c28', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }
+        }} />
       </body>
     </html>
   );

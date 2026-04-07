@@ -1,9 +1,13 @@
+"use client";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useCartStore } from "@/store/cartStore";
+import { toast } from "sonner";
 
 interface CourseCardProps {
+  id?: string;
   category: string;
   title: string;
   instructor: string;
@@ -14,6 +18,7 @@ interface CourseCardProps {
 }
 
 export const CourseCard: React.FC<CourseCardProps> = ({
+  id,
   category,
   title,
   instructor,
@@ -22,6 +27,36 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   price,
   imageUrl,
 }) => {
+  const addToCart = useCartStore((state) => state.addToCart);
+
+  const handleAddToCart = () => {
+    // Generate a simple ID from title if not provided inside mock data
+    const itemId = id || title.replace(/\s+/g, '-').toLowerCase();
+    
+    // Evaluate price string like "$89.00" securely to numeric structure
+    const numericPrice = Number(price.replace(/[^0-9.]/g, "")) || 0;
+    
+    const items = useCartStore.getState().items;
+    const isAlreadyInCart = items.some(i => i.id === itemId);
+
+    if (isAlreadyInCart) {
+      toast("Already in cart", {
+        description: "This course is already in your archive.",
+      });
+      return;
+    }
+    
+    addToCart({
+      id: itemId,
+      title: title,
+      price: numericPrice,
+      image: imageUrl,
+      instructor: instructor
+    });
+
+    toast.success("Added to cart");
+  };
+
   return (
     <Card className="group overflow-hidden flex flex-col hover:border-primary/50 transition-colors">
       <div className="relative aspect-video w-full overflow-hidden bg-background">
@@ -49,7 +84,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
         
         <div className="flex items-center justify-between mt-auto pt-2 border-t border-border">
           <span className="font-bold text-lg">{price}</span>
-          <Button variant="ghost" size="icon" aria-label="Add to cart">
+          <Button variant="ghost" size="icon" aria-label="Add to cart" onClick={handleAddToCart}>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="9" cy="21" r="1"></circle>
               <circle cx="20" cy="21" r="1"></circle>
