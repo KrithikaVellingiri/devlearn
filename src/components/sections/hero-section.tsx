@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export const HeroSection = () => {
@@ -13,7 +14,9 @@ export const HeroSection = () => {
           Precision-engineered curriculum for the modern software architect. Deep dive into system design, cloud infrastructure, and advanced engineering patterns.
         </p>
         <div className="flex items-center gap-4 pt-4">
-          <Button size="lg" className="w-full sm:w-auto px-8">Browse Courses</Button>
+          <Link href="/courses">
+            <Button size="lg" className="w-full sm:w-auto px-8">Browse Courses</Button>
+          </Link>
           <Button variant="secondary" size="lg" className="w-full sm:w-auto px-8">Start Free</Button>
         </div>
         <div className="flex items-center gap-10 pt-8 border-t border-border mt-8">
