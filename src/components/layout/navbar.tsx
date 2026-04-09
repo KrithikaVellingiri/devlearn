@@ -21,7 +21,7 @@ export const Navbar = async () => {
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/courses" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Courses</Link>
             <Link href="#" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Learning Paths</Link>
-            <Link href="#" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Curriculum</Link>
+            <Link href="/dashboard" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Curriculum</Link>
           </nav>
         </div>
 
@@ -35,9 +35,16 @@ export const Navbar = async () => {
           <div className="flex items-center gap-3">
             {session ? (
               <div className="flex items-center gap-4 ml-2">
-                <span className="text-sm font-semibold text-text-primary/80 hidden sm:inline-block">
-                  {session.user?.email}
-                </span>
+                <div className="flex items-center gap-2">
+                  <img 
+                    src="https://i.pravatar.cc/100" 
+                    alt="User avatar" 
+                    className="h-8 w-8 rounded-full object-cover"
+                  />
+                  <span className="text-sm font-semibold text-text-primary/80 hidden sm:inline-block">
+                    {session.user?.email}
+                  </span>
+                </div>
                 <Link href="/api/auth/signout">
                   <Button variant="secondary" size="sm">Logout</Button>
                 </Link>
