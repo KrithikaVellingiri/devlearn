@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
+import Link from "next/link";
 import { toast } from "sonner";
 
 interface CourseCardProps {
@@ -29,9 +30,10 @@ export const CourseCard: React.FC<CourseCardProps> = ({
 }) => {
   const addToCart = useCartStore((state) => state.addToCart);
 
-  const handleAddToCart = () => {
-    // Generate a simple ID from title if not provided inside mock data
-    const itemId = id || title.replace(/\s+/g, '-').toLowerCase();
+  const itemId = id || title.replace(/\s+/g, '-').toLowerCase();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
     
     // Evaluate price string like "$89.00" securely to numeric structure
     const numericPrice = Number(price.replace(/[^0-9.]/g, "")) || 0;
@@ -58,8 +60,9 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   };
 
   return (
-    <Card className="group overflow-hidden flex flex-col hover:border-primary/50 transition-colors">
-      <div className="relative aspect-video w-full overflow-hidden bg-background">
+    <Link href={`/courses/${itemId}`} className="block h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl">
+      <Card className="group h-full overflow-hidden flex flex-col hover:border-primary/50 transition-colors">
+        <div className="relative aspect-video w-full overflow-hidden bg-background">
         <div className="absolute top-3 left-3 z-10">
           <Badge variant="default">{category}</Badge>
         </div>
@@ -94,5 +97,6 @@ export const CourseCard: React.FC<CourseCardProps> = ({
         </div>
       </CardContent>
     </Card>
+    </Link>
   );
 };

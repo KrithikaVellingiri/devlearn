@@ -172,7 +172,7 @@ export const CoursesClient = () => {
       result = result.filter(c => c.level === level);
     }
     result = result.filter(c => c.numericPrice <= priceRange);
-    
+
     if (rating > 0) {
       result = result.filter(c => c.rating >= rating);
     }
@@ -197,19 +197,19 @@ export const CoursesClient = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 lg:py-12 flex flex-col lg:flex-row gap-10">
-      
+
       {/* Sidebar Filters */}
       <aside className="w-full lg:w-64 xl:w-72 shrink-0 space-y-10 lg:pr-6 border-r-0 lg:border-r border-border/40">
-        
+
         {/* Search */}
         <div>
           <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-primary/50 mb-3 block">Search Infrastructure</label>
           <div className="relative">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-primary/50"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <Input 
+            <Input
               className="pl-10 h-11 bg-surface/40 border-border/60 text-sm w-full placeholder:text-text-primary/40 focus:bg-surface/80 transition-colors"
-              placeholder="Search architecture..." 
-              value={search} onChange={(e) => setSearch(e.target.value)} 
+              placeholder="Search architecture..."
+              value={search} onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </div>
@@ -221,10 +221,10 @@ export const CoursesClient = () => {
             {CATEGORIES.map(cat => (
               <label key={cat} className="flex items-center gap-3 cursor-pointer group">
                 <div className={`w-4 h-4 rounded-[4px] border flex items-center justify-center transition-all ${categories.includes(cat) ? 'bg-primary border-primary shadow-[0_0_8px_rgba(91,69,255,0.4)]' : 'border-text-primary/20 bg-surface group-hover:border-primary/50'}`}>
-                    {categories.includes(cat) && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                  {categories.includes(cat) && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
                 </div>
                 <span className={`text-sm tracking-wide ${categories.includes(cat) ? 'text-white font-medium' : 'text-text-primary/70 group-hover:text-text-primary'}`}>
-                    {cat}
+                  {cat}
                 </span>
               </label>
             ))}
@@ -236,14 +236,13 @@ export const CoursesClient = () => {
           <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-primary/50 mb-4 block">Level</label>
           <div className="flex flex-wrap gap-2.5">
             {LEVELS.map(l => (
-              <button 
+              <button
                 key={l}
                 onClick={() => setLevel(level === l ? "" : l)}
-                className={`px-3 py-1.5 rounded-md border text-xs font-semibold tracking-wide transition-all ${
-                  level === l 
-                   ? 'bg-primary/10 border-primary text-primary shadow-sm' 
-                   : 'bg-surface/50 border-border/50 text-text-primary/60 hover:text-text-primary hover:border-text-primary/30'
-                }`}
+                className={`px-3 py-1.5 rounded-md border text-xs font-semibold tracking-wide transition-all ${level === l
+                    ? 'bg-primary/10 border-primary text-primary shadow-sm'
+                    : 'bg-surface/50 border-border/50 text-text-primary/60 hover:text-text-primary hover:border-text-primary/30'
+                  }`}
               >
                 {l}
               </button>
@@ -257,11 +256,11 @@ export const CoursesClient = () => {
             <h3 className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-primary/50">Price Range</h3>
             <span className="text-[11px] font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded border border-primary/20">$0 - ${(priceRange).toLocaleString()}</span>
           </div>
-          <input 
-            type="range" min="0" max="5000" step="50" 
-            value={priceRange} 
+          <input
+            type="range" min="0" max="5000" step="50"
+            value={priceRange}
             onChange={(e) => setPriceRange(Number(e.target.value))}
-            className="w-full h-1 bg-surface rounded-full appearance-none outline-none accent-primary cursor-pointer hover:accent-primary/80 transition-all" 
+            className="w-full h-1 bg-surface rounded-full appearance-none outline-none accent-primary cursor-pointer hover:accent-primary/80 transition-all"
           />
         </div>
 
@@ -271,12 +270,12 @@ export const CoursesClient = () => {
           <div className="space-y-4">
             {[4.5, 4.0].map(r => (
               <label key={r} className="flex items-center gap-3 cursor-pointer group">
-                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all ${rating === r ? 'border-primary bg-primary/10' : 'border-text-primary/20 bg-surface group-hover:border-primary/50'}`}>
-                      {rating === r && <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_6px_rgba(91,69,255,0.6)]" />}
-                  </div>
-                  <span className={`text-sm ${rating === r ? 'text-white font-medium' : 'text-text-primary/70 group-hover:text-text-primary'}`}>
-                      {r.toFixed(1)} & up <span className="text-yellow-500 ml-1">★</span>
-                  </span>
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all ${rating === r ? 'border-primary bg-primary/10' : 'border-text-primary/20 bg-surface group-hover:border-primary/50'}`}>
+                  {rating === r && <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_6px_rgba(91,69,255,0.6)]" />}
+                </div>
+                <span className={`text-sm ${rating === r ? 'text-white font-medium' : 'text-text-primary/70 group-hover:text-text-primary'}`}>
+                  {r.toFixed(1)} & up <span className="text-yellow-500 ml-1">★</span>
+                </span>
               </label>
             ))}
           </div>
@@ -290,7 +289,7 @@ export const CoursesClient = () => {
 
       {/* Main Content */}
       <main className="flex-1 min-w-0">
-        
+
         {/* Header Title + Sorting Bar */}
         <div className="mb-10 flex flex-col xl:flex-row xl:items-end justify-between gap-6 pb-6 border-b border-border/40">
           <div>
@@ -302,17 +301,16 @@ export const CoursesClient = () => {
               </Badge>
             </div>
           </div>
-          
+
           <div className="flex bg-surface/60 border border-border/50 rounded-lg p-1.5 shadow-inner shrink-0 w-max">
             {SORT_OPTIONS.map(s => (
-              <button 
-                key={s} 
+              <button
+                key={s}
                 onClick={() => setSortBy(s)}
-                className={`px-5 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md transition-all ${
-                  sortBy === s 
-                  ? 'bg-primary/20 text-primary shadow-sm ring-1 ring-primary/30' 
-                  : 'text-text-primary/60 hover:text-white hover:bg-surface'
-                }`}>
+                className={`px-5 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md transition-all ${sortBy === s
+                    ? 'bg-primary/20 text-primary shadow-sm ring-1 ring-primary/30'
+                    : 'text-text-primary/60 hover:text-white hover:bg-surface'
+                  }`}>
                 {s}
               </button>
             ))}
@@ -341,27 +339,27 @@ export const CoursesClient = () => {
 
             {/* Pagination Mock */}
             <div className="mt-16 flex items-center justify-center gap-2">
-               <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/50 hover:bg-surface hover:text-white transition-colors bg-surface/30">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-               </button>
-               <button className="w-10 h-10 rounded-md border border-primary bg-primary text-white font-bold flex items-center justify-center shadow-lg shadow-primary/20">
-                  1
-               </button>
-               <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/70 hover:bg-surface hover:text-white font-semibold transition-colors bg-surface/30">
-                  2
-               </button>
-               <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/70 hover:bg-surface hover:text-white font-semibold transition-colors bg-surface/30">
-                  3
-               </button>
-               <span className="w-8 flex items-center justify-center text-text-primary/40 font-bold tracking-widest">
-                  ...
-               </span>
-               <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/70 hover:bg-surface hover:text-white font-semibold transition-colors bg-surface/30">
-                  12
-               </button>
-               <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/50 hover:bg-surface hover:text-white transition-colors bg-surface/30">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-               </button>
+              <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/50 hover:bg-surface hover:text-white transition-colors bg-surface/30">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <button className="w-10 h-10 rounded-md border border-primary bg-primary text-white font-bold flex items-center justify-center shadow-lg shadow-primary/20">
+                1
+              </button>
+              <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/70 hover:bg-surface hover:text-white font-semibold transition-colors bg-surface/30">
+                2
+              </button>
+              <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/70 hover:bg-surface hover:text-white font-semibold transition-colors bg-surface/30">
+                3
+              </button>
+              <span className="w-8 flex items-center justify-center text-text-primary/40 font-bold tracking-widest">
+                ...
+              </span>
+              <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/70 hover:bg-surface hover:text-white font-semibold transition-colors bg-surface/30">
+                12
+              </button>
+              <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/50 hover:bg-surface hover:text-white transition-colors bg-surface/30">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
             </div>
           </>
         )}
