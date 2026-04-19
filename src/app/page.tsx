@@ -5,8 +5,9 @@ import { CourseGrid } from "@/components/sections/course-grid";
 import { StatsBanner } from "@/components/sections/stats-banner";
 import { EnterpriseBanner } from "@/components/sections/enterprise-banner";
 import { Footer } from "@/components/sections/footer";
+import { supabase } from "@/lib/supabase";
 
-const featuredCourses = [
+const fallbackFeatured = [
   {
     category: "SYSTEM DESIGN",
     title: "Scalable Microservices Architecture",
@@ -84,7 +85,30 @@ const trendingCourses = [
   }
 ];
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  // Fetch top 4 courses from Supabase for the Featured section
+  const { data: dbCourses } = await supabase
+    .from("courses")
+    .select("*")
+    .order("popularity", { ascending: false })
+    .limit(4);
+
+  // Map DB rows to the shape CourseGrid expects, with safe fallbacks
+  const featuredCourses = (dbCourses && dbCourses.length > 0)
+    ? dbCourses.map(c => ({
+        id: c.id,
+        category: c.category || "General",
+        title: c.title || "Untitled Course",
+        instructor: c.instructor?.name || "Unknown",
+        rating: c.rating ?? 0,
+        reviews: c.reviewsCount ?? 0,
+        price: c.price || "$0.00",
+        imageUrl: c.image || "/placeholder.jpg"
+      }))
+    : fallbackFeatured;
+
   return (
     <div className="min-h-screen bg-background text-text-primary font-sans flex flex-col">
       <Navbar />
@@ -100,3 +124,4 @@ export default function Home() {
     </div>
   );
 }
+

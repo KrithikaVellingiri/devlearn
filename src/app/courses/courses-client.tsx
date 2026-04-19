@@ -5,140 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const MOCK_COURSES = [
-  {
-    id: "1",
-    category: "System Design",
-    level: "Intermediate",
-    title: "Architecting Scalable Microservices with Go",
-    instructor: "Sarah Chen",
-    rating: 4.9,
-    reviews: 1024,
-    price: "$1,299.00",
-    numericPrice: 1299,
-    popularity: 100,
-    date: "2024-01-10",
-    imageUrl: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&q=80&w=1470"
-  },
-  {
-    id: "2",
-    category: "Security Architecture",
-    level: "Intermediate",
-    title: "Hardening Kubernetes: The Zero-Trust Framework",
-    instructor: "Marcus Thorne",
-    rating: 4.7,
-    reviews: 846,
-    price: "$849.00",
-    numericPrice: 849,
-    popularity: 85,
-    date: "2023-11-20",
-    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1470"
-  },
-  {
-    id: "3",
-    category: "Cloud Infrastructure",
-    level: "Advanced",
-    title: "Serverless Patterns for High-Throughput APIs",
-    instructor: "Elena R.",
-    rating: 4.8,
-    reviews: 1530,
-    price: "$599.00",
-    numericPrice: 599,
-    popularity: 95,
-    date: "2024-02-01",
-    imageUrl: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1470"
-  },
-  {
-    id: "4",
-    category: "Distributed Systems",
-    level: "Advanced",
-    title: "Observability Engineering: Tracing the Void",
-    instructor: "Adrian Kos",
-    rating: 4.6,
-    reviews: 620,
-    price: "$720.00",
-    numericPrice: 720,
-    popularity: 75,
-    date: "2023-09-15",
-    imageUrl: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=1488"
-  },
-  {
-    id: "5",
-    category: "System Design",
-    level: "Advanced",
-    title: "Designing Data-Intensive Cloud Applications",
-    instructor: "Martin K.",
-    rating: 5.0,
-    reviews: 3000,
-    price: "$2,500.00",
-    numericPrice: 2500,
-    popularity: 110,
-    date: "2024-03-01",
-    imageUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1472"
-  },
-  {
-    id: "6",
-    category: "Cloud Infrastructure",
-    level: "Beginner",
-    title: "AWS Cloud Native Architectures",
-    instructor: "John D.",
-    rating: 4.4,
-    reviews: 450,
-    price: "$199.00",
-    numericPrice: 199,
-    popularity: 60,
-    date: "2023-05-15",
-    imageUrl: "https://images.unsplash.com/photo-1667375085698-fa3ebaf0a049?auto=format&fit=crop&q=80&w=1470"
-  },
-  {
-    id: "7",
-    category: "Security Architecture",
-    level: "Advanced",
-    title: "Implementing OAuth 2.0 and OIDC",
-    instructor: "Jane Smith",
-    rating: 4.5,
-    reviews: 890,
-    price: "$499.00",
-    numericPrice: 499,
-    popularity: 80,
-    date: "2023-12-10",
-    imageUrl: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=1634"
-  },
-  {
-    id: "8",
-    category: "Distributed Systems",
-    level: "Beginner",
-    title: "Introduction to Event Streaming",
-    instructor: "Alice B.",
-    rating: 4.2,
-    reviews: 320,
-    price: "$150.00",
-    numericPrice: 150,
-    popularity: 50,
-    date: "2024-01-25",
-    imageUrl: "https://images.unsplash.com/photo-1614064010375-715bd7f818cc?auto=format&fit=crop&q=80&w=1470"
-  },
-  {
-    id: "9",
-    category: "Cloud Infrastructure",
-    level: "Intermediate",
-    title: "Terraform Masterclass for Production",
-    instructor: "Bob M.",
-    rating: 4.7,
-    reviews: 1100,
-    price: "$850.00",
-    numericPrice: 850,
-    popularity: 90,
-    date: "2023-10-05",
-    imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1472"
-  },
-];
-
+import { Course } from "@/types/course";
 const CATEGORIES = ["Cloud Infrastructure", "System Design", "Security Architecture", "Distributed Systems"];
 const LEVELS = ["Beginner", "Intermediate", "Advanced"];
 const SORT_OPTIONS = ["Popular", "Newest", "Price", "Rating"];
 
-export const CoursesClient = () => {
+export const CoursesClient = ({ courses }: { courses: Course[] }) => {
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
   const [level, setLevel] = useState<string>("");
@@ -160,40 +32,54 @@ export const CoursesClient = () => {
   };
 
   const filteredCourses = useMemo(() => {
-    let result = [...MOCK_COURSES];
+    let result = [...(courses || [])];
 
     if (search.trim() !== "") {
-      result = result.filter(c => c.title.toLowerCase().includes(search.toLowerCase()));
+      result = result.filter(c => c.title?.toLowerCase().includes(search.toLowerCase()));
     }
     if (categories.length > 0) {
-      result = result.filter(c => categories.includes(c.category));
+      result = result.filter(c => categories.map(cat => cat.toLowerCase()).includes(c.category?.toLowerCase()));
     }
     if (level) {
-      result = result.filter(c => c.level === level);
+      result = result.filter(c => c.level?.toLowerCase() === level.toLowerCase());
     }
-    result = result.filter(c => c.numericPrice <= priceRange);
+    result = result.filter(c => {
+      const price = typeof c.numericPrice === "string" ? parseFloat(c.numericPrice) : c.numericPrice;
+      return (price || 0) <= priceRange;
+    });
 
     if (rating > 0) {
-      result = result.filter(c => c.rating >= rating);
+      result = result.filter(c => {
+        const r = typeof c.rating === "string" ? parseFloat(c.rating) : c.rating;
+        return (r || 0) >= rating;
+      });
     }
 
     switch (sortBy) {
       case "Popular":
-        result.sort((a, b) => b.popularity - a.popularity);
+        result.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
         break;
       case "Newest":
-        result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        result.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
         break;
       case "Price":
-        result.sort((a, b) => a.numericPrice - b.numericPrice);
+        result.sort((a, b) => {
+          const priceA = typeof a.numericPrice === "string" ? parseFloat(a.numericPrice) : a.numericPrice;
+          const priceB = typeof b.numericPrice === "string" ? parseFloat(b.numericPrice) : b.numericPrice;
+          return (priceA || 0) - (priceB || 0);
+        });
         break;
       case "Rating":
-        result.sort((a, b) => b.rating - a.rating);
+        result.sort((a, b) => {
+          const ratingA = typeof a.rating === "string" ? parseFloat(a.rating) : a.rating;
+          const ratingB = typeof b.rating === "string" ? parseFloat(b.rating) : b.rating;
+          return (ratingB || 0) - (ratingA || 0);
+        });
         break;
     }
 
     return result;
-  }, [search, categories, level, priceRange, rating, sortBy]);
+  }, [search, categories, level, priceRange, rating, sortBy, courses]);
 
   return (
     <div className="container mx-auto px-4 py-8 lg:py-12 flex flex-col lg:flex-row gap-10">
@@ -240,8 +126,8 @@ export const CoursesClient = () => {
                 key={l}
                 onClick={() => setLevel(level === l ? "" : l)}
                 className={`px-3 py-1.5 rounded-md border text-xs font-semibold tracking-wide transition-all ${level === l
-                    ? 'bg-primary/10 border-primary text-primary shadow-sm'
-                    : 'bg-surface/50 border-border/50 text-text-primary/60 hover:text-text-primary hover:border-text-primary/30'
+                  ? 'bg-primary/10 border-primary text-primary shadow-sm'
+                  : 'bg-surface/50 border-border/50 text-text-primary/60 hover:text-text-primary hover:border-text-primary/30'
                   }`}
               >
                 {l}
@@ -296,7 +182,7 @@ export const CoursesClient = () => {
             <h1 className="text-3xl md:text-[2.5rem] font-extrabold text-white mb-3 tracking-tight">Cloud Learning Paths</h1>
             <div className="flex flex-wrap items-center gap-3">
               <p className="text-text-primary/60 font-medium tracking-wide">Engineered pathways for the modern developer.</p>
-              <Badge variant="secondary" className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-[4px] text-[10px] tracking-widest py-0.5 px-2 font-bold shadow-sm">
+              <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-[4px] text-[10px] tracking-widest py-0.5 px-2 font-bold shadow-sm">
                 {filteredCourses.length} RESULTS
               </Badge>
             </div>
@@ -308,8 +194,8 @@ export const CoursesClient = () => {
                 key={s}
                 onClick={() => setSortBy(s)}
                 className={`px-5 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md transition-all ${sortBy === s
-                    ? 'bg-primary/20 text-primary shadow-sm ring-1 ring-primary/30'
-                    : 'text-text-primary/60 hover:text-white hover:bg-surface'
+                  ? 'bg-primary/20 text-primary shadow-sm ring-1 ring-primary/30'
+                  : 'text-text-primary/60 hover:text-white hover:bg-surface'
                   }`}>
                 {s}
               </button>
@@ -333,7 +219,17 @@ export const CoursesClient = () => {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 lg:gap-8">
               {filteredCourses.map((course) => (
-                <CourseCard key={course.id} {...course} />
+                <CourseCard
+                  key={course.id}
+                  id={course.id}
+                  category={course.category || "General"}
+                  title={course.title || "Untitled Course"}
+                  instructor={course.instructor?.name || "Unknown"}
+                  rating={course.rating ?? 0}
+                  reviews={course.reviewsCount ?? 0}
+                  price={course.price || "$0.00"}
+                  imageUrl={course.image || "/placeholder.jpg"}
+                />
               ))}
             </div>
 

@@ -4,6 +4,7 @@ import { CourseCard } from "@/components/layout/course-card";
 interface CourseGridProps {
   title: string;
   courses: Array<{
+    id?: string;
     category: string;
     title: string;
     instructor: string;
@@ -33,9 +34,10 @@ export const CourseGrid: React.FC<CourseGridProps> = ({ title, courses, showIcon
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {courses.map((course, idx) => (
-          <CourseCard key={idx} {...course} />
+          <CourseCard key={course.id || idx} id={course.id} {...course} />
         ))}
       </div>
     </section>
   );
 };
+

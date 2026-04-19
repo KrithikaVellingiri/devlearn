@@ -30,13 +30,20 @@ export const CourseCard: React.FC<CourseCardProps> = ({
 }) => {
   const addToCart = useCartStore((state) => state.addToCart);
 
-  const itemId = id || title.replace(/\s+/g, '-').toLowerCase();
+  const safeTitle = title || "Untitled Course";
+  const safeInstructor = instructor || "Unknown Instructor";
+  const safeCategory = category || "General";
+  const safeRating = rating ?? 0;
+  const safeReviews = reviews ?? 0;
+  const safePrice = price || "$0.00";
+  const safeImage = imageUrl || "/placeholder.jpg";
+
+  const itemId = id || safeTitle.replace(/\s+/g, '-').toLowerCase();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     
-    // Evaluate price string like "$89.00" securely to numeric structure
-    const numericPrice = Number(price.replace(/[^0-9.]/g, "")) || 0;
+    const numericPrice = Number(safePrice.replace(/[^0-9.]/g, "")) || 0;
     
     const items = useCartStore.getState().items;
     const isAlreadyInCart = items.some(i => i.id === itemId);
@@ -50,10 +57,10 @@ export const CourseCard: React.FC<CourseCardProps> = ({
     
     addToCart({
       id: itemId,
-      title: title,
+      title: safeTitle,
       price: numericPrice,
-      image: imageUrl,
-      instructor: instructor
+      image: safeImage,
+      instructor: safeInstructor
     });
 
     toast.success("Added to cart");
@@ -64,29 +71,36 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       <Card className="group h-full overflow-hidden flex flex-col hover:border-primary/50 transition-colors">
         <div className="relative aspect-video w-full overflow-hidden bg-background">
         <div className="absolute top-3 left-3 z-10">
-          <Badge variant="default">{category}</Badge>
+          <Badge variant="default">{safeCategory}</Badge>
         </div>
-        <img 
-          src={imageUrl} 
-          alt={title} 
-          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
-        />
+        {safeImage ? (
+          <img 
+            src={safeImage} 
+            alt={safeTitle} 
+            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+            onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.jpg'; }}
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-primary/20 via-surface to-background flex items-center justify-center">
+            <span className="text-text-primary/30 text-sm font-bold tracking-widest uppercase">No Image</span>
+          </div>
+        )}
       </div>
       
       <CardContent className="flex flex-col flex-grow p-5 space-y-4">
         <div>
-          <h3 className="font-semibold text-lg line-clamp-2 leading-tight">{title}</h3>
-          <p className="text-sm text-text-primary/70 mt-1">By {instructor}</p>
+          <h3 className="font-semibold text-lg line-clamp-2 leading-tight">{safeTitle}</h3>
+          <p className="text-sm text-text-primary/70 mt-1">By {safeInstructor}</p>
         </div>
         
         <div className="flex items-center space-x-1.5 text-sm">
           <span className="text-yellow-500">★</span>
-          <span className="font-medium">{rating}</span>
-          <span className="text-text-primary/50">({reviews})</span>
+          <span className="font-medium">{safeRating}</span>
+          <span className="text-text-primary/50">({safeReviews})</span>
         </div>
         
         <div className="flex items-center justify-between mt-auto pt-2 border-t border-border">
-          <span className="font-bold text-lg">{price}</span>
+          <span className="font-bold text-lg">{safePrice}</span>
           <Button variant="ghost" size="icon" aria-label="Add to cart" onClick={handleAddToCart}>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="9" cy="21" r="1"></circle>
