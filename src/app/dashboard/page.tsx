@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
+import { supabase } from "@/lib/supabase";
 import {
   LayoutGrid,
   BookOpen,
@@ -16,36 +17,9 @@ import {
   LogOut,
   CheckCircle,
   Award,
-  Play
+  Play,
+  GraduationCap
 } from "lucide-react";
-
-// Mock Data
-const IN_PROGRESS_COURSES = [
-  {
-    id: "1",
-    category: "ADVANCED REACT",
-    title: "Mastering Concurrent Rendering and Server Components",
-    description: "Architect high-performance applications using the latest React features.",
-    progress: 65,
-    imageUrl: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
-  },
-  {
-    id: "2",
-    category: "DEVOPS",
-    title: "Kubernetes Orchestration for Enterprise Scalability",
-    description: "Deploy, scale, and manage containerized applications with K8s.",
-    progress: 22,
-    imageUrl: "https://images.unsplash.com/photo-1618401471353-b98a580d15ca?w=800&q=80",
-  },
-  {
-    id: "3",
-    category: "SYSTEM DESIGN",
-    title: "Distributed Systems Architectures & Data Consistency",
-    description: "Understanding CAP theorem, consensus algorithms, and fault-tolerance.",
-    progress: 89,
-    imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
-  }
-];
 
 const COMPLETED_COURSES = [
   {
@@ -72,6 +46,28 @@ export default async function DashboardPage() {
   }
 
   const userName = session.user?.name || session.user?.email?.split('@')[0] || "User";
+  const userEmail = session.user?.email || "";
+
+  // Fetch enrolled courses with full course data via join
+  const { data: enrollments } = await supabase
+    .from("enrollments")
+    .select("*, courses(*)")
+    .eq("user_email", userEmail)
+    .order("created_at", { ascending: false });
+
+  const enrolledCourses = (enrollments || []).map((enrollment: any) => ({
+    id: enrollment.course_id,
+    category: enrollment.courses?.category || "COURSE",
+    title: enrollment.courses?.title || "Untitled Course",
+    description: enrollment.courses?.description || "No description available.",
+    imageUrl: enrollment.courses?.image || "/placeholder.jpg",
+    instructor: enrollment.courses?.instructor?.name || "Unknown",
+    enrolledAt: new Date(enrollment.created_at).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }),
+  }));
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-background flex flex-col md:flex-row">
@@ -141,22 +137,24 @@ export default async function DashboardPage() {
             </h1>
             <div className="flex flex-wrap items-center gap-4">
               <Badge className="bg-primary/20 text-primary border-none px-3 py-1 font-semibold">
-                8 ACTIVE COURSES
+                {enrolledCourses.length} ENROLLED COURSE{enrolledCourses.length !== 1 ? "S" : ""}
               </Badge>
-              <span className="text-text-primary/60 text-sm italic">
-                You're in the top 5% of learners this week.
-              </span>
+              {enrolledCourses.length > 0 && (
+                <span className="text-text-primary/60 text-sm italic">
+                  Keep up the great work — your learning journey is underway.
+                </span>
+              )}
             </div>
           </div>
 
           <div className="flex bg-surface/30 rounded-2xl border border-border/50 divide-x divide-border/50 p-6 shadow-sm">
             <div className="px-6 flex flex-col justify-center text-center">
               <span className="text-[10px] font-bold text-text-primary/50 tracking-wider mb-1">ENROLLED</span>
-              <span className="text-3xl font-bold text-text-primary">12</span>
+              <span className="text-3xl font-bold text-text-primary">{enrolledCourses.length}</span>
             </div>
             <div className="px-6 flex flex-col justify-center text-center">
-              <span className="text-[10px] font-bold text-text-primary/50 tracking-wider mb-1">HOURS</span>
-              <span className="text-3xl font-bold text-text-primary">142</span>
+              <span className="text-[10px] font-bold text-text-primary/50 tracking-wider mb-1">COMPLETED</span>
+              <span className="text-3xl font-bold text-text-primary">{COMPLETED_COURSES.length}</span>
             </div>
             <div className="px-6 flex flex-col justify-center text-center">
               <span className="text-[10px] font-bold text-text-primary/50 tracking-wider mb-1">STREAK</span>
@@ -165,51 +163,70 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* In Progress Section */}
+        {/* Enrolled Courses Section */}
         <section className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="w-1.5 h-6 bg-primary rounded-full"></div>
-              <h2 className="text-2xl font-bold text-text-primary">In Progress</h2>
+              <h2 className="text-2xl font-bold text-text-primary">My Courses</h2>
             </div>
-            <div className="flex items-center gap-4 text-xs font-bold tracking-widest text-text-primary/50">
-              <button className="hover:text-text-primary transition-colors">VIEW ALL</button>
-              <button className="hover:text-text-primary transition-colors">SCHEDULE</button>
-            </div>
+            {enrolledCourses.length > 0 && (
+              <Link href="/courses" className="text-xs font-bold tracking-widest text-text-primary/50 hover:text-text-primary transition-colors">
+                BROWSE MORE
+              </Link>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {IN_PROGRESS_COURSES.map((course) => (
-              <Card key={course.id} className="group overflow-hidden bg-surface/80 hover:bg-surface border-border flex flex-col transition-all hover:border-primary/50">
-                <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
-                  <div className="absolute top-3 left-3 z-10">
-                    <Badge className="bg-background/80 backdrop-blur-md border border-primary/30 text-primary text-[10px] font-bold tracking-wider rounded-sm rounded-tr-xl">
-                      {course.category}
-                    </Badge>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent opacity-80 z-0 group-hover:opacity-90 transition-opacity duration-500"></div>
-                  <img src={course.imageUrl} alt={course.title} className="object-cover w-full h-full opacity-60 group-hover:scale-105 transition-transform duration-700" />
+          {enrolledCourses.length === 0 ? (
+            /* Empty state */
+            <Card className="bg-surface/30 border-border/50 border-dashed">
+              <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-2">
+                  <GraduationCap className="w-8 h-8 text-primary/60" />
                 </div>
-                <CardContent className="flex flex-col flex-grow p-6 pt-5">
-                  <h3 className="font-bold text-lg leading-tight text-white mb-2 line-clamp-2">{course.title}</h3>
-                  <p className="text-sm text-text-primary/60 line-clamp-2 mb-6">{course.description}</p>
-                  
-                  <div className="mt-auto pt-2 border-t border-border/50">
-                    <div className="flex justify-between items-center text-xs mb-2 mt-2">
-                      <span className="text-text-primary/50 font-bold tracking-wider">PROGRESS</span>
-                      <span className="text-primary font-bold">{course.progress}%</span>
+                <h3 className="text-xl font-bold text-text-primary">No courses yet</h3>
+                <p className="text-text-primary/60 text-sm text-center max-w-md">
+                  You haven&apos;t enrolled in any courses. Browse our catalog to find the perfect course to start your learning journey.
+                </p>
+                <Link href="/courses">
+                  <Button variant="primary" className="mt-2 shadow-md border-transparent px-8">
+                    Explore Courses
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {enrolledCourses.map((course: any) => (
+                <Card key={course.id} className="group overflow-hidden bg-surface/80 hover:bg-surface border-border flex flex-col transition-all hover:border-primary/50">
+                  <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
+                    <div className="absolute top-3 left-3 z-10">
+                      <Badge className="bg-background/80 backdrop-blur-md border border-primary/30 text-primary text-[10px] font-bold tracking-wider rounded-sm rounded-tr-xl">
+                        {course.category}
+                      </Badge>
                     </div>
-                    <div className="w-full h-1.5 bg-background border border-border/50 rounded-full overflow-hidden mb-6">
-                      <div className="h-full bg-primary rounded-full transition-all duration-1000" style={{ width: `${course.progress}%` }}></div>
-                    </div>
-                    <Button variant="primary" className="w-full shadow-md border-transparent">
-                      Resume <Play className="w-3 h-3 ml-2 fill-current" />
-                    </Button>
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent opacity-80 z-0 group-hover:opacity-90 transition-opacity duration-500"></div>
+                    <img src={course.imageUrl} alt={course.title} className="object-cover w-full h-full opacity-60 group-hover:scale-105 transition-transform duration-700" />
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  <CardContent className="flex flex-col flex-grow p-6 pt-5">
+                    <h3 className="font-bold text-lg leading-tight text-white mb-2 line-clamp-2">{course.title}</h3>
+                    <p className="text-sm text-text-primary/60 line-clamp-2 mb-2">{course.description}</p>
+                    <p className="text-xs text-text-primary/40 mb-6">
+                      By {course.instructor} • Enrolled {course.enrolledAt}
+                    </p>
+                    
+                    <div className="mt-auto pt-2 border-t border-border/50">
+                      <Link href={`/courses/${course.id}`}>
+                        <Button variant="primary" className="w-full shadow-md border-transparent mt-4">
+                          Continue Learning <Play className="w-3 h-3 ml-2 fill-current" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* Completed Section */}

@@ -7,6 +7,7 @@ import { EnterpriseBanner } from "@/components/sections/enterprise-banner";
 import { Footer } from "@/components/sections/footer";
 import { supabase } from "@/lib/supabase";
 
+
 const fallbackFeatured = [
   {
     category: "SYSTEM DESIGN",

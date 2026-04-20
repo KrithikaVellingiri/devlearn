@@ -3,15 +3,23 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/sections/footer";
 import { supabase } from "@/lib/supabase";
 import { CourseDetailClient } from "./course-detail-client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const dynamic = "force-dynamic";
 
-export default async function CourseDetailPage({ params }: { params: { id: string } }) {
+export default async function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
+  // Get the current session
+  const session = await getServerSession(authOptions);
+  const userEmail = session?.user?.email || null;
+
   // Fetch main course
   const { data: course, error } = await supabase
     .from("courses")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   if (error || !course) {
@@ -22,7 +30,7 @@ export default async function CourseDetailPage({ params }: { params: { id: strin
   const { data: relatedCourses } = await supabase
     .from("courses")
     .select("*")
-    .neq("id", params.id)
+    .neq("id", id)
     .limit(3);
 
   return (
@@ -31,10 +39,12 @@ export default async function CourseDetailPage({ params }: { params: { id: strin
       <main className="flex-grow">
         <CourseDetailClient 
             course={course as any} 
-            relatedCourses={(relatedCourses || []) as any} 
+            relatedCourses={(relatedCourses || []) as any}
+            userEmail={userEmail}
         />
       </main>
       <Footer />
     </div>
   );
 }
+

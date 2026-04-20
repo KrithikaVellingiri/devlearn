@@ -8,36 +8,55 @@
  */
 import { Instructor, CurriculumSection, Review, CourseInclude } from './course';
 
+export interface CourseRow {
+  id: string;
+  title: string;
+  description: string;
+  instructor: Instructor;
+  price: string;
+  numericPrice: number;
+  originalPrice: number | null;
+  discount: string | null;
+  category: string;
+  level: string;
+  rating: number;
+  reviewsCount: number;
+  reviewsCountLabel: string | null;
+  image: string;
+  curriculum: CurriculumSection[];
+  track: string | null;
+  enrolled: string | null;
+  lastUpdated: string | null;
+  popularity: number;
+  date: string;
+  reviews: Review[];
+  includes: CourseInclude[];
+}
+
+export interface EnrollmentRow {
+  id: string;
+  user_email: string;
+  course_id: string;
+  created_at: string;
+}
+
 export type Database = {
   public: {
     Tables: {
       courses: {
-        Row: {
-          id: string;
-          title: string;
-          description: string;
-          instructor: Instructor;
-          price: string;
-          numericPrice: number;
-          originalPrice: number | null;
-          discount: string | null;
-          category: string;
-          level: string;
-          rating: number;
-          reviewsCount: number;
-          reviewsCountLabel: string | null;
-          image: string;
-          curriculum: CurriculumSection[];
-          track: string | null;
-          enrolled: string | null;
-          lastUpdated: string | null;
-          popularity: number;
-          date: string;
-          reviews: Review[];
-          includes: CourseInclude[];
+        Row: CourseRow;
+        Insert: Partial<CourseRow>;
+        Update: Partial<CourseRow>;
+      };
+      enrollments: {
+        Row: EnrollmentRow;
+        Insert: {
+          id?: string;
+          user_email: string;
+          course_id: string;
+          created_at?: string;
         };
-        Insert: Partial<Database['public']['Tables']['courses']['Row']>;
-        Update: Partial<Database['public']['Tables']['courses']['Row']>;
+        Update: Partial<EnrollmentRow>;
       };
     };
     Views: Record<string, never>;
