@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/layout/course-card";
 import { useCartStore } from "@/store/cartStore";
-import { enrollInCourse, checkEnrollment } from "@/services/enrollments";
 import { toast } from "sonner";
 import {
   Star,
@@ -20,9 +20,9 @@ import {
   ChevronDown,
   ChevronUp,
   User,
-  CheckCircle2,
+  ShoppingCart,
   Play,
-  Loader2
+  Check
 } from "lucide-react";
 import { Course } from "@/types/course";
 
@@ -38,22 +38,10 @@ function TerminalIcon(props: React.SVGProps<SVGSVGElement>) {
 export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { course: Course, relatedCourses: Course[], userEmail: string | null }) => {
   const addToCart = useCartStore((state) => state.addToCart);
   const cartItems = useCartStore((state) => state.items);
+  const router = useRouter();
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({ "01": true });
 
-  // Enrollment state
-  const [isEnrolled, setIsEnrolled] = useState(false);
-  const [isEnrolling, setIsEnrolling] = useState(false);
-  const [isCheckingEnrollment, setIsCheckingEnrollment] = useState(false);
-
-  // Check enrollment status on mount
-  useEffect(() => {
-    if (!userEmail) return;
-    setIsCheckingEnrollment(true);
-    checkEnrollment(userEmail, course.id)
-      .then((enrolled) => setIsEnrolled(enrolled))
-      .catch(() => {})
-      .finally(() => setIsCheckingEnrollment(false));
-  }, [userEmail, course.id]);
+  const isInCart = cartItems.some(i => i.id === course.id);
 
   const toggleSection = (id: string) => {
     setOpenSections(prev => ({
@@ -63,9 +51,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
   };
 
   const handleAddToCart = () => {
-    const isAlreadyInCart = cartItems.some(i => i.id === course.id);
-
-    if (isAlreadyInCart) {
+    if (isInCart) {
       toast("Already in cart", {
         description: "This course is already in your cart.",
       });
@@ -85,49 +71,17 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
     });
   };
 
-  const handleBuyNow = async () => {
-    // If not logged in, redirect to sign-in
-    if (!userEmail) {
-      window.location.href = "/api/auth/signin";
-      return;
-    }
-
-    // Already enrolled
-    if (isEnrolled) {
-      toast("Already enrolled", {
-        description: "You are already enrolled in this course.",
+  const handleAddToCartAndGo = () => {
+    if (!isInCart) {
+      addToCart({
+        id: course.id,
+        title: course.title || "Untitled Course",
+        price: course.numericPrice ?? 0,
+        image: course.image || "/placeholder.jpg",
+        instructor: course.instructor?.name || "Unknown"
       });
-      return;
     }
-
-    setIsEnrolling(true);
-    try {
-      const result = await enrollInCourse(userEmail, course.id);
-
-      if (result.success) {
-        setIsEnrolled(true);
-        if (result.alreadyEnrolled) {
-          toast("Already enrolled", {
-            description: "You are already enrolled in this course.",
-          });
-        } else {
-          toast.success("🎉 Enrollment successful!", {
-            description: `You are now enrolled in "${course.title}". Head to your dashboard to start learning.`,
-            duration: 5000,
-          });
-        }
-      } else {
-        toast.error("Enrollment failed", {
-          description: result.error || "Something went wrong. Please try again.",
-        });
-      }
-    } catch {
-      toast.error("Enrollment failed", {
-        description: "An unexpected error occurred. Please try again.",
-      });
-    } finally {
-      setIsEnrolling(false);
-    }
+    router.push("/cart");
   };
 
   return (
@@ -351,39 +305,28 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
 
                   {/* Action Buttons */}
                   <div className="space-y-3 mb-6">
-                    {isEnrolled ? (
-                      <div className="w-full py-4 text-base font-bold text-center rounded-md bg-success/20 text-success border border-success/30 flex items-center justify-center gap-2">
-                        <CheckCircle2 className="w-5 h-5" />
-                        Enrolled
-                      </div>
-                    ) : (
+                    <Button
+                      variant="primary"
+                      onClick={handleAddToCartAndGo}
+                      className="w-full py-6 text-base font-bold shadow-lg shadow-primary/20 border-transparent transition-all hover:scale-[1.02]"
+                    >
+                      <ShoppingCart className="w-5 h-5 mr-2" />
+                      {isInCart ? "Go to Cart" : "Add to Cart & Checkout"}
+                    </Button>
+                    {!isInCart && (
                       <Button
-                        variant="primary"
-                        onClick={handleBuyNow}
-                        disabled={isEnrolling || isCheckingEnrollment}
-                        className="w-full py-6 text-base font-bold shadow-lg shadow-primary/20 border-transparent transition-all hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+                        onClick={handleAddToCart}
+                        className="w-full py-6 text-base font-bold bg-surface border border-border/80 hover:bg-surface/80 hover:border-text-primary/30 transition-all text-white"
                       >
-                        {isEnrolling ? (
-                          <>
-                            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                            Enrolling…
-                          </>
-                        ) : isCheckingEnrollment ? (
-                          <>
-                            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                            Loading…
-                          </>
-                        ) : (
-                          "Buy Now"
-                        )}
+                        Add to Cart
                       </Button>
                     )}
-                    <Button
-                      onClick={handleAddToCart}
-                      className="w-full py-6 text-base font-bold bg-surface border border-border/80 hover:bg-surface/80 hover:border-text-primary/30 transition-all text-white"
-                    >
-                      Add to Cart
-                    </Button>
+                    {isInCart && (
+                      <div className="w-full py-3 text-sm font-semibold text-center rounded-md bg-primary/10 text-primary border border-primary/20 flex items-center justify-center gap-2">
+                        <Check className="w-4 h-4" />
+                        Added to Cart
+                      </div>
+                    )}
                   </div>
 
                   <p className="text-[10px] text-center text-text-primary/50 tracking-widest uppercase font-bold mb-8">

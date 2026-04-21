@@ -1,12 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
+import { enrollInCourse } from "@/services/enrollments";
+import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { CourseGrid } from "@/components/sections/course-grid";
+import { Loader2, CheckCircle2, ShoppingCart, AlertTriangle } from "lucide-react";
 
 const recommendedCourses = [
   {
@@ -39,8 +43,11 @@ const recommendedCourses = [
 ];
 
 export const CartClient = () => {
-  const { items, removeFromCart } = useCartStore();
+  const { items, removeFromCart, clearCart } = useCartStore();
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -52,13 +59,94 @@ export const CartClient = () => {
   const discount = items.length > 0 ? 45.00 : 0; 
   const total = Math.max(0, subtotal - discount);
 
+  const handleCheckout = async () => {
+    // Must be logged in
+    if (status !== "authenticated" || !session?.user?.email) {
+      toast.error("Please sign in", {
+        description: "You need to be logged in to complete checkout.",
+      });
+      window.location.href = "/api/auth/signin";
+      return;
+    }
+
+    if (items.length === 0) return;
+
+    setIsCheckingOut(true);
+    const userEmail = session.user.email;
+
+    let successCount = 0;
+    let duplicateCount = 0;
+    let errorCount = 0;
+
+    // Loop through cart items and enroll each
+    for (const item of items) {
+      try {
+        const result = await enrollInCourse(userEmail, item.id);
+        if (result.success) {
+          if (result.alreadyEnrolled) {
+            duplicateCount++;
+          } else {
+            successCount++;
+          }
+        } else {
+          errorCount++;
+          console.error(`Failed to enroll in ${item.title}:`, result.error);
+        }
+      } catch (err) {
+        errorCount++;
+        console.error(`Error enrolling in ${item.title}:`, err);
+      }
+    }
+
+    setIsCheckingOut(false);
+
+    // Show results
+    if (errorCount > 0 && successCount === 0 && duplicateCount === 0) {
+      toast.error("Checkout failed", {
+        description: "Could not enroll in any courses. Please try again.",
+        duration: 5000,
+      });
+      return;
+    }
+
+    // Build success message
+    const parts: string[] = [];
+    if (successCount > 0) {
+      parts.push(`${successCount} course${successCount > 1 ? "s" : ""} enrolled`);
+    }
+    if (duplicateCount > 0) {
+      parts.push(`${duplicateCount} already enrolled`);
+    }
+    if (errorCount > 0) {
+      parts.push(`${errorCount} failed`);
+    }
+
+    if (successCount > 0) {
+      toast.success("🎉 Checkout complete!", {
+        description: parts.join(" · ") + ". Redirecting to your dashboard…",
+        duration: 4000,
+      });
+    } else if (duplicateCount > 0) {
+      toast("Already enrolled", {
+        description: "You were already enrolled in all these courses. Redirecting to your dashboard…",
+        duration: 4000,
+      });
+    }
+
+    // Clear cart and redirect to dashboard
+    clearCart();
+    setTimeout(() => {
+      router.push("/dashboard");
+    }, 1500);
+  };
+
   return (
     <>
       <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="mb-10">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-2">Shopping Cart</h1>
           <p className="text-xs uppercase tracking-widest text-text-primary/60 font-semibold">
-            Precision in selection • {items.length} items
+            Precision in selection • {items.length} item{items.length !== 1 ? "s" : ""}
           </p>
         </div>
 
@@ -71,7 +159,7 @@ export const CartClient = () => {
               <h2 className="text-xl font-bold text-white mb-2">Your cart is empty</h2>
               <p className="text-text-primary/60">Looks like you haven't added any courses to your cart yet.</p>
             </div>
-            <Link href="/">
+            <Link href="/courses">
                <Button variant="primary" size="lg" className="px-8 mt-2">Browse Courses</Button>
             </Link>
           </div>
@@ -93,10 +181,11 @@ export const CartClient = () => {
                     <div className="flex items-center gap-6 mt-6 sm:mt-0">
                       <button 
                         onClick={() => removeFromCart(item.id)}
-                        className="text-xs uppercase tracking-wider font-semibold text-text-primary/60 hover:text-red-400 flex items-center gap-2 transition-colors"
+                        disabled={isCheckingOut}
+                        className="text-xs uppercase tracking-wider font-semibold text-text-primary/60 hover:text-red-400 flex items-center gap-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                        Remove from Archive
+                        Remove
                       </button>
                       <button className="text-xs uppercase tracking-wider font-semibold text-text-primary/60 hover:text-white flex items-center gap-2 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
@@ -147,10 +236,35 @@ export const CartClient = () => {
                     <Button variant="secondary" className="h-11 px-6 font-bold text-xs tracking-wider">APPLY</Button>
                   </div>
                 </div>
+
+                {/* Not authenticated warning */}
+                {status !== "authenticated" && (
+                  <div className="mb-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
+                    <AlertTriangle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+                    <p className="text-xs text-amber-300/80 leading-relaxed">
+                      You need to <Link href="/api/auth/signin" className="underline font-semibold text-amber-300 hover:text-amber-200">sign in</Link> to checkout.
+                    </p>
+                  </div>
+                )}
                 
-                <Button size="lg" className="w-full flex items-center justify-center gap-2 group h-12 mt-8 text-base" onClick={() => toast("Checkout coming soon", { description: "We are currently integrating our payment provider." })}>
-                  Proceed to Checkout
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                <Button 
+                  size="lg" 
+                  className="w-full flex items-center justify-center gap-2 group h-12 mt-4 text-base disabled:opacity-60 disabled:cursor-not-allowed" 
+                  onClick={handleCheckout}
+                  disabled={isCheckingOut || items.length === 0}
+                >
+                  {isCheckingOut ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Processing Enrollment…
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-5 h-5" />
+                      Checkout & Enroll
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </>
+                  )}
                 </Button>
                 
                 <p className="mt-8 text-center text-[9px] uppercase tracking-[0.2em] text-text-primary/40 leading-loose font-bold max-w-[280px] mx-auto">
