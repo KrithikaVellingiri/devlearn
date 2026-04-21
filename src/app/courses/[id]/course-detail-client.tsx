@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/layout/course-card";
 import { useCartStore } from "@/store/cartStore";
+import { checkEnrollment } from "@/services/enrollments";
+import { getCompletedLessons, markLessonComplete } from "@/services/progress";
 import { toast } from "sonner";
 import {
   Star,
@@ -22,7 +24,9 @@ import {
   User,
   ShoppingCart,
   Play,
-  Check
+  Check,
+  CheckCircle2,
+  Loader2
 } from "lucide-react";
 import { Course } from "@/types/course";
 
@@ -40,6 +44,20 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
   const cartItems = useCartStore((state) => state.items);
   const router = useRouter();
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({ "01": true });
+
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [completedLessons, setCompletedLessons] = useState<string[]>([]);
+  const [markingLessonId, setMarkingLessonId] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (!userEmail) return;
+    checkEnrollment(userEmail, course.id).then(enrolled => {
+      setIsEnrolled(enrolled);
+      if (enrolled) {
+        getCompletedLessons(userEmail, course.id).then(setCompletedLessons);
+      }
+    });
+  }, [userEmail, course.id]);
 
   const isInCart = cartItems.some(i => i.id === course.id);
 
@@ -83,6 +101,32 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
     }
     router.push("/cart");
   };
+
+  const handleMarkComplete = async (sectionId: string, idx: number) => {
+    if (!userEmail || !isEnrolled) return;
+    
+    const stableLessonId = `${course.id}-${sectionId}-${idx}`;
+    setMarkingLessonId(stableLessonId);
+    
+    try {
+      const result = await markLessonComplete(userEmail, course.id, stableLessonId);
+      if (result.success) {
+        if (!result.alreadyCompleted) {
+          toast.success("Lesson completed!");
+        }
+        setCompletedLessons(prev => [...new Set([...prev, stableLessonId])]);
+      } else {
+        toast.error("Failed to mark complete", { description: result.error });
+      }
+    } catch (e) {
+      toast.error("An unexpected error occurred");
+    } finally {
+      setMarkingLessonId(null);
+    }
+  };
+
+  const totalLessons = course.curriculum?.reduce((acc, sec) => acc + (sec.lessons?.length || 0), 0) || 0;
+  const progressPercent = totalLessons > 0 ? Math.round((completedLessons.length / totalLessons) * 100) : 0;
 
   return (
     <div className="min-h-screen bg-background text-text-primary">
@@ -135,9 +179,24 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
               <div className="flex items-end justify-between mb-6">
                 <h2 className="text-xl font-bold text-white">Curriculum</h2>
                 <div className="text-xs font-bold text-cyan-400 tracking-wider">
-                  12 Chapters • 94 Lessons • 42h Total
+                  {course.curriculum.length} Chapters • {totalLessons} Lessons
                 </div>
               </div>
+
+              {isEnrolled && totalLessons > 0 && (
+                <div className="mb-6">
+                  <div className="flex justify-between items-center text-sm font-bold text-white mb-2">
+                    <span>Your Progress</span>
+                    <span className="text-cyan-400">{progressPercent}%</span>
+                  </div>
+                  <div className="w-full bg-surface/50 rounded-full h-2.5 overflow-hidden border border-border/50">
+                    <div className="bg-cyan-400 h-2.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${progressPercent}%` }}></div>
+                  </div>
+                  <p className="text-xs text-text-primary/60 mt-2 font-medium">
+                    {completedLessons.length} of {totalLessons} lessons completed
+                  </p>
+                </div>
+              )}
 
               <div className="space-y-3">
                 {course.curriculum?.map((section) => (
@@ -159,19 +218,42 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
 
                     {openSections[section.id] && (section.lessons?.length ?? 0) > 0 && (
                       <div className="p-2 border-t border-border/50">
-                        {section.lessons.map((lesson, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-3 px-4 hover:bg-background/50 rounded-lg transition-colors group">
-                            <div className="flex items-center gap-4">
-                              {lesson.type === 'video' ? (
-                                <PlayCircle className="w-4 h-4 text-text-primary/60 group-hover:text-primary transition-colors" />
-                              ) : (
-                                <FileText className="w-4 h-4 text-text-primary/60 group-hover:text-primary transition-colors" />
-                              )}
-                              <span className="text-sm text-text-primary/90">{lesson.title}</span>
+                        {section.lessons.map((lesson, idx) => {
+                          const stableLessonId = `${course.id}-${section.id}-${idx}`;
+                          const isCompleted = completedLessons.includes(stableLessonId);
+                          const isMarking = markingLessonId === stableLessonId;
+
+                          return (
+                            <div key={idx} className="flex items-center justify-between p-3 px-4 hover:bg-background/50 rounded-lg transition-colors group">
+                              <div className="flex items-center gap-4">
+                                {isCompleted ? (
+                                  <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+                                ) : lesson.type === 'video' ? (
+                                  <PlayCircle className="w-4 h-4 text-text-primary/60 group-hover:text-primary transition-colors" />
+                                ) : (
+                                  <FileText className="w-4 h-4 text-text-primary/60 group-hover:text-primary transition-colors" />
+                                )}
+                                <span className={`text-sm ${isCompleted ? 'text-text-primary/50 line-through' : 'text-text-primary/90'}`}>
+                                  {lesson.title}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                <span className="text-xs font-mono text-text-primary/50">{lesson.duration}</span>
+                                {isEnrolled && (
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => handleMarkComplete(section.id, idx)}
+                                    disabled={isCompleted || isMarking}
+                                    className={`h-7 px-3 text-[10px] uppercase font-bold tracking-wider ${isCompleted ? 'text-cyan-400 opacity-50' : 'text-primary hover:bg-primary/10'}`}
+                                  >
+                                    {isMarking ? <Loader2 className="w-3 h-3 animate-spin" /> : isCompleted ? 'Completed' : 'Mark Complete'}
+                                  </Button>
+                                )}
+                              </div>
                             </div>
-                            <span className="text-xs font-mono text-text-primary/50">{lesson.duration}</span>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -305,27 +387,36 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
 
                   {/* Action Buttons */}
                   <div className="space-y-3 mb-6">
-                    <Button
-                      variant="primary"
-                      onClick={handleAddToCartAndGo}
-                      className="w-full py-6 text-base font-bold shadow-lg shadow-primary/20 border-transparent transition-all hover:scale-[1.02]"
-                    >
-                      <ShoppingCart className="w-5 h-5 mr-2" />
-                      {isInCart ? "Go to Cart" : "Add to Cart & Checkout"}
-                    </Button>
-                    {!isInCart && (
-                      <Button
-                        onClick={handleAddToCart}
-                        className="w-full py-6 text-base font-bold bg-surface border border-border/80 hover:bg-surface/80 hover:border-text-primary/30 transition-all text-white"
-                      >
-                        Add to Cart
-                      </Button>
-                    )}
-                    {isInCart && (
-                      <div className="w-full py-3 text-sm font-semibold text-center rounded-md bg-primary/10 text-primary border border-primary/20 flex items-center justify-center gap-2">
-                        <Check className="w-4 h-4" />
-                        Added to Cart
+                    {isEnrolled ? (
+                      <div className="w-full py-4 text-base font-bold text-center rounded-md bg-success/20 text-success border border-success/30 flex items-center justify-center gap-2">
+                        <CheckCircle2 className="w-5 h-5" />
+                        Enrolled
                       </div>
+                    ) : (
+                      <>
+                        <Button
+                          variant="primary"
+                          onClick={handleAddToCartAndGo}
+                          className="w-full py-6 text-base font-bold shadow-lg shadow-primary/20 border-transparent transition-all hover:scale-[1.02]"
+                        >
+                          <ShoppingCart className="w-5 h-5 mr-2" />
+                          {isInCart ? "Go to Cart" : "Add to Cart & Checkout"}
+                        </Button>
+                        {!isInCart && (
+                          <Button
+                            onClick={handleAddToCart}
+                            className="w-full py-6 text-base font-bold bg-surface border border-border/80 hover:bg-surface/80 hover:border-text-primary/30 transition-all text-white"
+                          >
+                            Add to Cart
+                          </Button>
+                        )}
+                        {isInCart && (
+                          <div className="w-full py-3 text-sm font-semibold text-center rounded-md bg-primary/10 text-primary border border-primary/20 flex items-center justify-center gap-2">
+                            <Check className="w-4 h-4" />
+                            Added to Cart
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
 

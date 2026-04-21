@@ -55,19 +55,41 @@ export default async function DashboardPage() {
     .eq("user_email", userEmail)
     .order("created_at", { ascending: false });
 
-  const enrolledCourses = (enrollments || []).map((enrollment: any) => ({
-    id: enrollment.course_id,
-    category: enrollment.courses?.category || "COURSE",
-    title: enrollment.courses?.title || "Untitled Course",
-    description: enrollment.courses?.description || "No description available.",
-    imageUrl: enrollment.courses?.image || "/placeholder.jpg",
-    instructor: enrollment.courses?.instructor?.name || "Unknown",
-    enrolledAt: new Date(enrollment.created_at).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }),
-  }));
+  // Fetch course progress
+  const { data: progressData } = await supabase
+    .from("course_progress")
+    .select("course_id, lesson_id")
+    .eq("user_email", userEmail);
+
+  const progressByCourse = (progressData || []).reduce((acc: any, row: any) => {
+    if (!acc[row.course_id]) acc[row.course_id] = [];
+    acc[row.course_id].push(row.lesson_id);
+    return acc;
+  }, {});
+
+  const enrolledCourses = (enrollments || []).map((enrollment: any) => {
+    const course = enrollment.courses || {};
+    const totalLessons = course.curriculum?.reduce((sum: number, section: any) => sum + (section.lessons?.length || 0), 0) || 0;
+    const completedLessonsCount = progressByCourse[enrollment.course_id]?.length || 0;
+    const progressPercent = totalLessons > 0 ? Math.round((completedLessonsCount / totalLessons) * 100) : 0;
+
+    return {
+      id: enrollment.course_id,
+      category: course.category || "COURSE",
+      title: course.title || "Untitled Course",
+      description: course.description || "No description available.",
+      imageUrl: course.image || "/placeholder.jpg",
+      instructor: course.instructor?.name || "Unknown",
+      enrolledAt: new Date(enrollment.created_at).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+      progressPercent,
+      completedLessonsCount,
+      totalLessons
+    };
+  });
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-background flex flex-col md:flex-row">
@@ -211,14 +233,26 @@ export default async function DashboardPage() {
                   <CardContent className="flex flex-col flex-grow p-6 pt-5">
                     <h3 className="font-bold text-lg leading-tight text-white mb-2 line-clamp-2">{course.title}</h3>
                     <p className="text-sm text-text-primary/60 line-clamp-2 mb-2">{course.description}</p>
-                    <p className="text-xs text-text-primary/40 mb-6">
+                    <p className="text-xs text-text-primary/40 mb-4">
                       By {course.instructor} • Enrolled {course.enrolledAt}
                     </p>
+                    
+                    {course.totalLessons > 0 && (
+                      <div className="mb-4">
+                        <div className="flex justify-between items-center text-xs font-bold text-white mb-2">
+                          <span className="text-text-primary/60">{course.completedLessonsCount} / {course.totalLessons} lessons</span>
+                          <span className="text-cyan-400">{course.progressPercent}%</span>
+                        </div>
+                        <div className="w-full bg-surface/50 rounded-full h-1.5 overflow-hidden border border-border/50">
+                          <div className="bg-cyan-400 h-1.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${course.progressPercent}%` }}></div>
+                        </div>
+                      </div>
+                    )}
                     
                     <div className="mt-auto pt-2 border-t border-border/50">
                       <Link href={`/courses/${course.id}`}>
                         <Button variant="primary" className="w-full shadow-md border-transparent mt-4">
-                          Continue Learning <Play className="w-3 h-3 ml-2 fill-current" />
+                          {course.progressPercent === 100 ? "Review Course" : "Continue Learning"} <Play className="w-3 h-3 ml-2 fill-current" />
                         </Button>
                       </Link>
                     </div>
