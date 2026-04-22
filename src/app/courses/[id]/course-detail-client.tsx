@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/layout/course-card";
 import { useCartStore } from "@/store/cartStore";
 import { checkEnrollment } from "@/services/enrollments";
-import { getCompletedLessons, markLessonComplete } from "@/services/progress";
+import { getCompletedLessons } from "@/services/progress";
 import { toast } from "sonner";
 import {
   Star,
@@ -47,7 +47,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
 
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
-  const [markingLessonId, setMarkingLessonId] = useState<string | null>(null);
+  const [firstIncompleteLessonId, setFirstIncompleteLessonId] = useState<string | null>(null);
 
   React.useEffect(() => {
     if (!userEmail) return;
@@ -58,6 +58,25 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
       }
     });
   }, [userEmail, course.id]);
+
+  // Compute the first incomplete lesson
+  React.useEffect(() => {
+    if (!isEnrolled || !course.curriculum) return;
+    for (let c = 0; c < course.curriculum.length; c++) {
+      const section = course.curriculum[c];
+      for (let l = 0; l < (section.lessons?.length || 0); l++) {
+        const stableId = `${course.id}-${section.id}-${l}`;
+        if (!completedLessons.includes(stableId)) {
+          setFirstIncompleteLessonId(stableId);
+          return;
+        }
+      }
+    }
+    // If all completed, start at the beginning
+    if (course.curriculum[0]?.lessons?.[0]) {
+      setFirstIncompleteLessonId(`${course.id}-${course.curriculum[0].id}-0`);
+    }
+  }, [isEnrolled, course.curriculum, completedLessons, course.id]);
 
   const isInCart = cartItems.some(i => i.id === course.id);
 
@@ -102,28 +121,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
     router.push("/cart");
   };
 
-  const handleMarkComplete = async (sectionId: string, idx: number) => {
-    if (!userEmail || !isEnrolled) return;
-    
-    const stableLessonId = `${course.id}-${sectionId}-${idx}`;
-    setMarkingLessonId(stableLessonId);
-    
-    try {
-      const result = await markLessonComplete(userEmail, course.id, stableLessonId);
-      if (result.success) {
-        if (!result.alreadyCompleted) {
-          toast.success("Lesson completed!");
-        }
-        setCompletedLessons(prev => [...new Set([...prev, stableLessonId])]);
-      } else {
-        toast.error("Failed to mark complete", { description: result.error });
-      }
-    } catch (e) {
-      toast.error("An unexpected error occurred");
-    } finally {
-      setMarkingLessonId(null);
-    }
-  };
+
 
   const totalLessons = course.curriculum?.reduce((acc, sec) => acc + (sec.lessons?.length || 0), 0) || 0;
   const progressPercent = totalLessons > 0 ? Math.round((completedLessons.length / totalLessons) * 100) : 0;
@@ -221,8 +219,6 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                         {section.lessons.map((lesson, idx) => {
                           const stableLessonId = `${course.id}-${section.id}-${idx}`;
                           const isCompleted = completedLessons.includes(stableLessonId);
-                          const isMarking = markingLessonId === stableLessonId;
-
                           return (
                             <div key={idx} className="flex items-center justify-between p-3 px-4 hover:bg-background/50 rounded-lg transition-colors group">
                               <div className="flex items-center gap-4">
@@ -239,17 +235,6 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                               </div>
                               <div className="flex items-center gap-4">
                                 <span className="text-xs font-mono text-text-primary/50">{lesson.duration}</span>
-                                {isEnrolled && (
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm"
-                                    onClick={() => handleMarkComplete(section.id, idx)}
-                                    disabled={isCompleted || isMarking}
-                                    className={`h-7 px-3 text-[10px] uppercase font-bold tracking-wider ${isCompleted ? 'text-cyan-400 opacity-50' : 'text-primary hover:bg-primary/10'}`}
-                                  >
-                                    {isMarking ? <Loader2 className="w-3 h-3 animate-spin" /> : isCompleted ? 'Completed' : 'Mark Complete'}
-                                  </Button>
-                                )}
                               </div>
                             </div>
                           );
@@ -388,10 +373,18 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                   {/* Action Buttons */}
                   <div className="space-y-3 mb-6">
                     {isEnrolled ? (
-                      <div className="w-full py-4 text-base font-bold text-center rounded-md bg-success/20 text-success border border-success/30 flex items-center justify-center gap-2">
-                        <CheckCircle2 className="w-5 h-5" />
-                        Enrolled
-                      </div>
+                      <Button
+                        onClick={() => {
+                          const url = firstIncompleteLessonId 
+                            ? `/courses/${course.id}/learn?lessonId=${firstIncompleteLessonId}`
+                            : `/courses/${course.id}/learn`;
+                          router.push(url);
+                        }}
+                        className="w-full py-6 text-base font-bold bg-success/20 text-success border border-success/30 hover:bg-success/30 transition-all flex items-center justify-center gap-2 shadow-lg shadow-success/10"
+                      >
+                        <Play className="w-5 h-5 fill-current" />
+                        Continue Learning
+                      </Button>
                     ) : (
                       <>
                         <Button

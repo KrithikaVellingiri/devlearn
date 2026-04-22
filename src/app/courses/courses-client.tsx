@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { CourseCard } from "@/components/layout/course-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,8 @@ export const CoursesClient = ({ courses }: { courses: Course[] }) => {
   const [priceRange, setPriceRange] = useState<number>(5000);
   const [rating, setRating] = useState<number>(0);
   const [sortBy, setSortBy] = useState<string>("Popular");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const COURSES_PER_PAGE = 6;
 
   const toggleCategory = (cat: string) => {
     setCategories(prev => prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]);
@@ -80,6 +82,14 @@ export const CoursesClient = ({ courses }: { courses: Course[] }) => {
 
     return result;
   }, [search, categories, level, priceRange, rating, sortBy, courses]);
+
+  // Reset pagination to page 1 whenever filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, categories, level, priceRange, rating, sortBy]);
+
+  const totalPages = Math.ceil(filteredCourses.length / COURSES_PER_PAGE);
+  const paginatedCourses = filteredCourses.slice((currentPage - 1) * COURSES_PER_PAGE, currentPage * COURSES_PER_PAGE);
 
   return (
     <div className="container mx-auto px-4 py-8 lg:py-12 flex flex-col lg:flex-row gap-10">
@@ -218,7 +228,7 @@ export const CoursesClient = ({ courses }: { courses: Course[] }) => {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 lg:gap-8">
-              {filteredCourses.map((course) => (
+              {paginatedCourses.map((course) => (
                 <CourseCard
                   key={course.id}
                   id={course.id}
@@ -233,30 +243,43 @@ export const CoursesClient = ({ courses }: { courses: Course[] }) => {
               ))}
             </div>
 
-            {/* Pagination Mock */}
-            <div className="mt-16 flex items-center justify-center gap-2">
-              <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/50 hover:bg-surface hover:text-white transition-colors bg-surface/30">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-              </button>
-              <button className="w-10 h-10 rounded-md border border-primary bg-primary text-white font-bold flex items-center justify-center shadow-lg shadow-primary/20">
-                1
-              </button>
-              <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/70 hover:bg-surface hover:text-white font-semibold transition-colors bg-surface/30">
-                2
-              </button>
-              <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/70 hover:bg-surface hover:text-white font-semibold transition-colors bg-surface/30">
-                3
-              </button>
-              <span className="w-8 flex items-center justify-center text-text-primary/40 font-bold tracking-widest">
-                ...
-              </span>
-              <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/70 hover:bg-surface hover:text-white font-semibold transition-colors bg-surface/30">
-                12
-              </button>
-              <button className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/50 hover:bg-surface hover:text-white transition-colors bg-surface/30">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-              </button>
-            </div>
+            {/* Dynamic Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-16 flex items-center justify-center gap-2">
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/50 hover:bg-surface hover:text-white transition-colors bg-surface/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                
+                {Array.from({ length: totalPages }).map((_, i) => {
+                  const page = i + 1;
+                  return (
+                    <button 
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-10 h-10 rounded-md border flex items-center justify-center font-semibold transition-colors ${
+                        currentPage === page 
+                          ? "border-primary bg-primary text-white shadow-lg shadow-primary/20" 
+                          : "border-border/50 text-text-primary/70 hover:bg-surface hover:text-white bg-surface/30"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/50 hover:bg-surface hover:text-white transition-colors bg-surface/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+              </div>
+            )}
           </>
         )}
 
