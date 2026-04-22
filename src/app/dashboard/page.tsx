@@ -21,22 +21,7 @@ import {
   GraduationCap
 } from "lucide-react";
 
-const COMPLETED_COURSES = [
-  {
-    id: "101",
-    category: "FUNDAMENTALS",
-    title: "The Modern Web Developer's Toolchain v2",
-    issued: "March 12, 2024",
-    grade: "A+",
-  },
-  {
-    id: "102",
-    category: "SECURITY",
-    title: "Application Security & Pentesting for Architects",
-    issued: "January 28, 2024",
-    grade: "A",
-  }
-];
+export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -48,18 +33,26 @@ export default async function DashboardPage() {
   const userName = session.user?.name || session.user?.email?.split('@')[0] || "User";
   const userEmail = session.user?.email || "";
 
-  // Fetch enrolled courses with full course data via join
-  const { data: enrollments } = await supabase
-    .from("enrollments")
-    .select("*, courses(*)")
-    .eq("user_email", userEmail)
-    .order("created_at", { ascending: false });
+  let enrollments = [];
+  let progressData = [];
+  let fetchError = false;
 
-  // Fetch course progress
-  const { data: progressData } = await supabase
-    .from("course_progress")
-    .select("course_id, lesson_id")
-    .eq("user_email", userEmail);
+  try {
+    // Fetch enrolled courses with full course data via join
+    const [{ data: enrollData, error: enrollError }, { data: progData, error: progError }] = await Promise.all([
+      supabase.from("enrollments").select("*, courses(*)").eq("user_email", userEmail).order("created_at", { ascending: false }),
+      supabase.from("course_progress").select("course_id, lesson_id").eq("user_email", userEmail)
+    ]);
+
+    if (enrollError || progError) {
+      fetchError = true;
+    } else {
+      enrollments = enrollData || [];
+      progressData = progData || [];
+    }
+  } catch (err) {
+    fetchError = true;
+  }
 
   const progressByCourse = (progressData || []).reduce((acc: any, row: any) => {
     if (!acc[row.course_id]) acc[row.course_id] = [];
@@ -67,19 +60,24 @@ export default async function DashboardPage() {
     return acc;
   }, {});
 
-  const enrolledCourses = (enrollments || []).map((enrollment: any) => {
+  const inProgressCourses: any[] = [];
+  const completedCourses: any[] = [];
+
+  (enrollments || []).forEach((enrollment: any) => {
     const course = enrollment.courses || {};
     const totalLessons = course.curriculum?.reduce((sum: number, section: any) => sum + (section.lessons?.length || 0), 0) || 0;
     const completedLessonsCount = progressByCourse[enrollment.course_id]?.length || 0;
     const progressPercent = totalLessons > 0 ? Math.round((completedLessonsCount / totalLessons) * 100) : 0;
 
-    return {
+    const formattedCourse = {
       id: enrollment.course_id,
       category: course.category || "COURSE",
       title: course.title || "Untitled Course",
       description: course.description || "No description available.",
       imageUrl: course.image || "/placeholder.jpg",
       instructor: course.instructor?.name || "Unknown",
+      // Fake issued date for the sake of presentation
+      issued: new Date(enrollment.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
       enrolledAt: new Date(enrollment.created_at).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
@@ -87,9 +85,21 @@ export default async function DashboardPage() {
       }),
       progressPercent,
       completedLessonsCount,
-      totalLessons
+      totalLessons,
+      grade: "A+" // Simulated aesthetic grading logic
     };
+
+    if (totalLessons > 0 && completedLessonsCount >= totalLessons) {
+       completedCourses.push(formattedCourse);
+    } else {
+       inProgressCourses.push(formattedCourse);
+    }
   });
+
+  const enrolledCourses = [
+    ...inProgressCourses,
+    ...completedCourses
+  ];
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-background flex flex-col md:flex-row">
@@ -172,11 +182,11 @@ export default async function DashboardPage() {
           <div className="flex bg-surface/30 rounded-2xl border border-border/50 divide-x divide-border/50 p-6 shadow-sm">
             <div className="px-6 flex flex-col justify-center text-center">
               <span className="text-[10px] font-bold text-text-primary/50 tracking-wider mb-1">ENROLLED</span>
-              <span className="text-3xl font-bold text-text-primary">{enrolledCourses.length}</span>
+              <span className="text-3xl font-bold text-text-primary">{inProgressCourses.length}</span>
             </div>
             <div className="px-6 flex flex-col justify-center text-center">
               <span className="text-[10px] font-bold text-text-primary/50 tracking-wider mb-1">COMPLETED</span>
-              <span className="text-3xl font-bold text-text-primary">{COMPLETED_COURSES.length}</span>
+              <span className="text-3xl font-bold text-text-primary">{completedCourses.length}</span>
             </div>
             <div className="px-6 flex flex-col justify-center text-center">
               <span className="text-[10px] font-bold text-text-primary/50 tracking-wider mb-1">STREAK</span>
@@ -190,36 +200,53 @@ export default async function DashboardPage() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="w-1.5 h-6 bg-primary rounded-full"></div>
-              <h2 className="text-2xl font-bold text-text-primary">My Courses</h2>
+              <h2 className="text-2xl font-bold text-text-primary">In Progress</h2>
             </div>
-            {enrolledCourses.length > 0 && (
+            {inProgressCourses.length > 0 && (
               <Link href="/courses" className="text-xs font-bold tracking-widest text-text-primary/50 hover:text-text-primary transition-colors">
                 BROWSE MORE
               </Link>
             )}
           </div>
 
-          {enrolledCourses.length === 0 ? (
+          {fetchError ? (
+            <Card className="bg-surface/30 border-red-500/20 border-dashed">
+              <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
+                <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-400"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+                <h3 className="text-xl font-bold text-white">Something went wrong. Please try again.</h3>
+                <p className="text-text-primary/60 text-sm text-center max-w-md">
+                  We couldn't connect to our servers to load your enrolled courses.
+                </p>
+                <a href="/dashboard">
+                  <Button variant="primary" className="mt-2 shadow-md border-transparent px-8">
+                    Retry
+                  </Button>
+                </a>
+              </CardContent>
+            </Card>
+          ) : inProgressCourses.length === 0 ? (
             /* Empty state */
             <Card className="bg-surface/30 border-border/50 border-dashed">
               <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
                 <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-2">
                   <GraduationCap className="w-8 h-8 text-primary/60" />
                 </div>
-                <h3 className="text-xl font-bold text-text-primary">No courses yet</h3>
+                <h3 className="text-xl font-bold text-text-primary">No courses in progress</h3>
                 <p className="text-text-primary/60 text-sm text-center max-w-md">
-                  You haven&apos;t enrolled in any courses. Browse our catalog to find the perfect course to start your learning journey.
+                  You haven&apos;t started or enrolled in any new courses. Browse our catalog to find the perfect course to start your learning journey.
                 </p>
                 <Link href="/courses">
                   <Button variant="primary" className="mt-2 shadow-md border-transparent px-8">
-                    Explore Courses
+                    Browse courses
                   </Button>
                 </Link>
               </CardContent>
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {enrolledCourses.map((course: any) => (
+              {inProgressCourses.map((course: any) => (
                 <Card key={course.id} className="group overflow-hidden bg-surface/80 hover:bg-surface border-border flex flex-col transition-all hover:border-primary/50">
                   <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
                     <div className="absolute top-3 left-3 z-10">
@@ -248,9 +275,8 @@ export default async function DashboardPage() {
                         </div>
                       </div>
                     )}
-                    
                     <div className="mt-auto pt-2 border-t border-border/50">
-                      <Link href={`/courses/${course.id}`}>
+                      <Link href={course.totalLessons > 0 ? `/courses/${course.id}/learn` : `/courses/${course.id}`}>
                         <Button variant="primary" className="w-full shadow-md border-transparent mt-4">
                           {course.progressPercent === 100 ? "Review Course" : "Continue Learning"} <Play className="w-3 h-3 ml-2 fill-current" />
                         </Button>
@@ -271,33 +297,35 @@ export default async function DashboardPage() {
           </div>
 
           <div className="space-y-4">
-            {COMPLETED_COURSES.map((course) => (
-              <Card key={course.id} className="bg-surface/50 border-border/50 hover:bg-surface transition-colors flex flex-col sm:flex-row items-center p-5 gap-6">
-                <div className="w-14 h-14 bg-background rounded-2xl flex items-center justify-center flex-shrink-0 border border-border/60 shadow-sm">
-                  <CheckCircle className="w-6 h-6 text-cyan-400" />
-                </div>
-                
-                <div className="flex-1 text-center sm:text-left">
-                  <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
-                    <span className="text-[10px] font-bold text-text-primary/50 tracking-widest uppercase">
-                      {course.category}
-                    </span>
-                    <Badge className="bg-cyan-400/10 text-cyan-400 text-[9px] font-bold px-1.5 py-0 border-transparent h-4 rounded-sm">
-                      COMPLETED
-                    </Badge>
+            {completedCourses.map((course: any) => (
+              <Link href={`/courses/${course.id}/learn`} key={course.id} className="block group">
+                <Card className="bg-surface/50 border-border/50 group-hover:bg-surface group-hover:border-primary/50 transition-colors flex flex-col sm:flex-row items-center p-5 gap-6">
+                  <div className="w-14 h-14 bg-background rounded-2xl flex items-center justify-center flex-shrink-0 border border-border/60 shadow-sm">
+                    <CheckCircle className="w-6 h-6 text-cyan-400" />
                   </div>
-                  <h3 className="font-bold text-white text-lg">{course.title}</h3>
-                  <p className="text-xs font-mono text-text-primary/50 mt-1">
-                    Issued on {course.issued} • Grade: {course.grade}
-                  </p>
-                </div>
-                
-                <div className="mt-4 sm:mt-0 flex-shrink-0 w-full sm:w-auto">
-                  <Button variant="ghost" className="w-full sm:w-auto text-primary hover:text-primary hover:bg-primary/10 gap-2 font-medium border-transparent">
-                    <Award className="w-4 h-4" /> View Certificate
-                  </Button>
-                </div>
-              </Card>
+                  
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                      <span className="text-[10px] font-bold text-text-primary/50 tracking-widest uppercase">
+                        {course.category}
+                      </span>
+                      <Badge className="bg-cyan-400/10 text-cyan-400 text-[9px] font-bold px-1.5 py-0 border-transparent h-4 rounded-sm">
+                        COMPLETED
+                      </Badge>
+                    </div>
+                    <h3 className="font-bold text-white text-lg group-hover:text-primary transition-colors">{course.title}</h3>
+                    <p className="text-xs font-mono text-text-primary/50 mt-1">
+                      Issued on {course.issued} • Grade: {course.grade}
+                    </p>
+                  </div>
+                  
+                  <div className="mt-4 sm:mt-0 flex-shrink-0 w-full sm:w-auto">
+                    <Button variant="ghost" className="w-full sm:w-auto text-primary hover:text-primary hover:bg-primary/10 gap-2 font-medium border-transparent">
+                      <Award className="w-4 h-4" /> View Certificate
+                    </Button>
+                  </div>
+                </Card>
+              </Link>
             ))}
           </div>
         </section>

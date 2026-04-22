@@ -16,6 +16,8 @@ interface CourseCardProps {
   reviews: number;
   price: string;
   imageUrl: string;
+  enrolled?: boolean;
+  totalLessons?: number;
 }
 
 export const CourseCard: React.FC<CourseCardProps> = ({
@@ -27,6 +29,8 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   reviews,
   price,
   imageUrl,
+  enrolled,
+  totalLessons = 1,
 }) => {
   const addToCart = useCartStore((state) => state.addToCart);
 
@@ -39,6 +43,8 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   const safeImage = imageUrl || "/placeholder.jpg";
 
   const itemId = id || safeTitle.replace(/\s+/g, '-').toLowerCase();
+  
+  const destination = enrolled && totalLessons > 0 ? `/courses/${itemId}/learn` : `/courses/${itemId}`;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -67,7 +73,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   };
 
   return (
-    <Link href={`/courses/${itemId}`} className="block h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl">
+    <Link href={destination} className="block h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl">
       <Card className="group h-full overflow-hidden flex flex-col hover:border-primary/50 transition-colors">
         <div className="relative aspect-video w-full overflow-hidden bg-background">
         <div className="absolute top-3 left-3 z-10">

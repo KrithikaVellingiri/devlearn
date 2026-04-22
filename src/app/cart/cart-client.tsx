@@ -160,7 +160,7 @@ export const CartClient = () => {
               <p className="text-text-primary/60">Looks like you haven't added any courses to your cart yet.</p>
             </div>
             <Link href="/courses">
-               <Button variant="primary" size="lg" className="px-8 mt-2">Browse Courses</Button>
+               <Button variant="primary" size="lg" className="px-8 mt-2">Explore courses</Button>
             </Link>
           </div>
         ) : (

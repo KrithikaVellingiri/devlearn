@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { CourseCard } from "@/components/layout/course-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,16 +11,20 @@ const CATEGORIES = ["All Categories", "Cloud Infrastructure", "System Design", "
 const LEVELS = ["All Levels", "Beginner", "Intermediate", "Advanced"];
 const SORT_OPTIONS = ["Rating", "Price"];
 
-export const CoursesClient = ({ courses }: { courses: Course[] }) => {
+export const CoursesClient = ({ courses, enrolledIds = [] }: { courses: Course[], enrolledIds?: string[] }) => {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  
   const initialSearch = searchParams?.get("search") || "";
+  const initialPage = parseInt(searchParams?.get("page") || "1", 10);
 
   const [search, setSearch] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
   const [category, setCategory] = useState<string>("All Categories");
   const [level, setLevel] = useState<string>("All Levels");
   const [sortBy, setSortBy] = useState<string>("Rating");
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  
+  const currentPage = !isNaN(initialPage) ? initialPage : 1;
   const COURSES_PER_PAGE = 6;
 
   // Debounce search input
@@ -30,6 +34,30 @@ export const CoursesClient = ({ courses }: { courses: Course[] }) => {
     }, 300);
     return () => clearTimeout(timer);
   }, [search]);
+
+  // Sync state from URL (if arrived from external navigation like Homepage SearchBar)
+  useEffect(() => {
+    const urlSearch = searchParams?.get("search") || "";
+    
+    if (urlSearch !== debouncedSearch && urlSearch !== search) {
+      setSearch(urlSearch);
+      setDebouncedSearch(urlSearch);
+    }
+  }, [searchParams]);
+
+  // Sync state to URL safely ONLY when search text actually updates
+  useEffect(() => {
+    const currentUrlSearch = searchParams?.get("search") || "";
+    
+    // Only push if there's an actual state difference to prevent loops
+    if (debouncedSearch !== currentUrlSearch) {
+      const params = new URLSearchParams();
+      if (debouncedSearch) params.set("search", debouncedSearch);
+      
+      const newUrl = `/courses${params.toString() ? `?${params.toString()}` : ""}`;
+      router.push(newUrl, { scroll: false });
+    }
+  }, [debouncedSearch, router, searchParams]);
 
   const handleReset = () => {
     setSearch("");
@@ -71,10 +99,14 @@ export const CoursesClient = ({ courses }: { courses: Course[] }) => {
     return result;
   }, [debouncedSearch, category, level, sortBy, courses]);
 
-  // Reset pagination to page 1 whenever filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [debouncedSearch, category, level, sortBy]);
+  // Navigation Page handler wrapper
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams();
+    if (debouncedSearch) params.set("search", debouncedSearch);
+    if (newPage > 1) params.set("page", newPage.toString());
+    
+    router.push(`/courses${params.toString() ? `?${params.toString()}` : ""}`, { scroll: false });
+  };
 
   const totalPages = Math.ceil(filteredCourses.length / COURSES_PER_PAGE);
   const paginatedCourses = filteredCourses.slice((currentPage - 1) * COURSES_PER_PAGE, currentPage * COURSES_PER_PAGE);
@@ -179,34 +211,40 @@ export const CoursesClient = ({ courses }: { courses: Course[] }) => {
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-text-primary/50"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </div>
             <h3 className="text-2xl font-extrabold text-white mb-3 tracking-tight">No courses found</h3>
-            <p className="text-text-primary/60 mb-8 max-w-sm leading-relaxed">We couldn't find any structural paths matching your exacting filter constraints.</p>
-            <Button size="lg" variant="secondary" className="font-bold px-8" onClick={handleReset}>
-              Clear All Filters
+            <p className="text-text-primary/60 mb-8 max-w-sm leading-relaxed">Try adjusting your search or filters.</p>
+            <Button size="lg" variant="secondary" className="font-bold px-8 flex items-center gap-2" onClick={handleReset}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+              Clear filters
             </Button>
           </div>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 lg:gap-8">
-              {paginatedCourses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  id={course.id}
-                  category={course.category || "General"}
-                  title={course.title || "Untitled Course"}
-                  instructor={course.instructor?.name || "Unknown"}
-                  rating={course.rating ?? 0}
-                  reviews={course.reviewsCount ?? 0}
-                  price={course.price || "$0.00"}
-                  imageUrl={course.image || "/placeholder.jpg"}
-                />
-              ))}
+              {paginatedCourses.map((course) => {
+                const totalLessons = course.curriculum?.reduce((acc, sec) => acc + (sec.lessons?.length || 0), 0) || 0;
+                return (
+                  <CourseCard
+                    key={course.id}
+                    id={course.id}
+                    category={course.category || "General"}
+                    title={course.title || "Untitled Course"}
+                    instructor={course.instructor?.name || "Unknown"}
+                    rating={course.rating ?? 0}
+                    reviews={course.reviewsCount ?? 0}
+                    price={course.price || "$0.00"}
+                    imageUrl={course.image || "/placeholder.jpg"}
+                    enrolled={enrolledIds.includes(course.id)}
+                    totalLessons={totalLessons}
+                  />
+                );
+              })}
             </div>
 
             {/* Dynamic Pagination */}
             {totalPages > 1 && (
               <div className="mt-16 flex items-center justify-center gap-2">
                 <button 
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
                   className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/50 hover:bg-surface hover:text-white transition-colors bg-surface/30 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -218,7 +256,7 @@ export const CoursesClient = ({ courses }: { courses: Course[] }) => {
                   return (
                     <button 
                       key={page}
-                      onClick={() => setCurrentPage(page)}
+                      onClick={() => handlePageChange(page)}
                       className={`w-10 h-10 rounded-md border flex items-center justify-center font-semibold transition-colors ${
                         currentPage === page 
                           ? "border-primary bg-primary text-white shadow-lg shadow-primary/20" 
@@ -231,7 +269,7 @@ export const CoursesClient = ({ courses }: { courses: Course[] }) => {
                 })}
 
                 <button 
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
                   className="w-10 h-10 rounded-md border border-border/50 flex items-center justify-center text-text-primary/50 hover:bg-surface hover:text-white transition-colors bg-surface/30 disabled:opacity-50 disabled:cursor-not-allowed"
                 >

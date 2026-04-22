@@ -48,6 +48,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   const [firstIncompleteLessonId, setFirstIncompleteLessonId] = useState<string | null>(null);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   React.useEffect(() => {
     if (!userEmail) return;
@@ -87,7 +88,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
     }));
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (isInCart) {
       toast("Already in cart", {
         description: "This course is already in your cart.",
@@ -95,6 +96,10 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
       return;
     }
 
+    setIsAddingToCart(true);
+    // Simulate short network delay for better UX
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    
     addToCart({
       id: course.id,
       title: course.title || "Untitled Course",
@@ -103,13 +108,16 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
       instructor: course.instructor?.name || "Unknown"
     });
 
+    setIsAddingToCart(false);
     toast.success("Added to cart", {
       description: `${course.title} has been added to your cart.`
     });
   };
 
-  const handleAddToCartAndGo = () => {
+  const handleAddToCartAndGo = async () => {
     if (!isInCart) {
+      setIsAddingToCart(true);
+      await new Promise((resolve) => setTimeout(resolve, 400));
       addToCart({
         id: course.id,
         title: course.title || "Untitled Course",
@@ -117,6 +125,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
         image: course.image || "/placeholder.jpg",
         instructor: course.instructor?.name || "Unknown"
       });
+      setIsAddingToCart(false);
     }
     router.push("/cart");
   };
@@ -380,27 +389,46 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                             : `/courses/${course.id}/learn`;
                           router.push(url);
                         }}
-                        className="w-full py-6 text-base font-bold bg-success/20 text-success border border-success/30 hover:bg-success/30 transition-all flex items-center justify-center gap-2 shadow-lg shadow-success/10"
+                        disabled={totalLessons === 0}
+                        className="w-full py-6 text-base font-bold bg-success/20 text-success border border-success/30 hover:bg-success/30 transition-all flex items-center justify-center gap-2 shadow-lg shadow-success/10 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Play className="w-5 h-5 fill-current" />
-                        Continue Learning
+                        {totalLessons === 0 ? "No Lessons Found" : "Continue Learning"}
                       </Button>
                     ) : (
                       <>
                         <Button
                           variant="primary"
                           onClick={handleAddToCartAndGo}
-                          className="w-full py-6 text-base font-bold shadow-lg shadow-primary/20 border-transparent transition-all hover:scale-[1.02]"
+                          disabled={isAddingToCart}
+                          className="w-full py-6 text-base font-bold shadow-lg shadow-primary/20 border-transparent transition-all hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
                         >
-                          <ShoppingCart className="w-5 h-5 mr-2" />
-                          {isInCart ? "Go to Cart" : "Add to Cart & Checkout"}
+                          {isAddingToCart ? (
+                            <>
+                              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                              Adding...
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingCart className="w-5 h-5 mr-2" />
+                              {isInCart ? "Go to Cart" : "Add to Cart & Checkout"}
+                            </>
+                          )}
                         </Button>
                         {!isInCart && (
                           <Button
                             onClick={handleAddToCart}
-                            className="w-full py-6 text-base font-bold bg-surface border border-border/80 hover:bg-surface/80 hover:border-text-primary/30 transition-all text-white"
+                            disabled={isAddingToCart}
+                            className="w-full py-6 text-base font-bold bg-surface border border-border/80 hover:bg-surface/80 hover:border-text-primary/30 transition-all text-white disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            Add to Cart
+                            {isAddingToCart ? (
+                              <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Adding to Cart...
+                              </>
+                            ) : (
+                              "Add to Cart"
+                            )}
                           </Button>
                         )}
                         {isInCart && (

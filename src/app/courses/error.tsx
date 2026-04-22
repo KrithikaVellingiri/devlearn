@@ -1,24 +1,42 @@
 "use client";
 
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { AlertCircle, RefreshCw } from "lucide-react";
 
-export default function Error({
+export default function CourseError({
   error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    // Log the error to an error reporting service
+    console.error(error);
+  }, [error]);
+
   return (
-    <div className="min-h-screen bg-background text-center flex flex-col items-center justify-center p-8">
-      <div className="bg-surface/50 p-6 rounded-full border border-border/50 mb-6 shadow-sm">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    <div className="flex-grow flex items-center justify-center p-8 bg-background min-h-[50vh]">
+      <div className="max-w-md w-full bg-surface/30 border border-border/50 rounded-2xl p-8 text-center shadow-xl">
+        <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <AlertCircle className="w-8 h-8 text-red-400" />
+        </div>
+        <h2 className="text-2xl font-extrabold text-white mb-2 tracking-tight">Failed to load courses</h2>
+        <p className="text-text-primary/60 mb-8 leading-relaxed">
+          We encountered an unexpected error while loading the catalog. Please try again.
+        </p>
+        <div className="flex flex-col gap-4 justify-center">
+          <Button 
+            onClick={() => reset()} 
+            className="font-bold flex items-center justify-center gap-2"
+            variant="primary"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Retry
+          </Button>
+        </div>
       </div>
-      <h2 className="text-2xl font-extrabold text-white mb-3 tracking-tight">Something went wrong!</h2>
-      <p className="text-text-primary/60 mb-8 max-w-sm leading-relaxed">{error.message || "Failed to load the learning paths."}</p>
-      <Button size="lg" variant="secondary" className="font-bold px-8" onClick={() => reset()}>
-        Try again
-      </Button>
     </div>
   );
 }
