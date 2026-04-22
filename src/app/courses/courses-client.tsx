@@ -1,69 +1,57 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { CourseCard } from "@/components/layout/course-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { Course } from "@/types/course";
-const CATEGORIES = ["Cloud Infrastructure", "System Design", "Security Architecture", "Distributed Systems"];
-const LEVELS = ["Beginner", "Intermediate", "Advanced"];
-const SORT_OPTIONS = ["Popular", "Newest", "Price", "Rating"];
+const CATEGORIES = ["All Categories", "Cloud Infrastructure", "System Design", "Security Architecture", "Distributed Systems"];
+const LEVELS = ["All Levels", "Beginner", "Intermediate", "Advanced"];
+const SORT_OPTIONS = ["Rating", "Price"];
 
 export const CoursesClient = ({ courses }: { courses: Course[] }) => {
-  const [search, setSearch] = useState("");
-  const [categories, setCategories] = useState<string[]>([]);
-  const [level, setLevel] = useState<string>("");
-  const [priceRange, setPriceRange] = useState<number>(5000);
-  const [rating, setRating] = useState<number>(0);
-  const [sortBy, setSortBy] = useState<string>("Popular");
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams?.get("search") || "";
+
+  const [search, setSearch] = useState(initialSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
+  const [category, setCategory] = useState<string>("All Categories");
+  const [level, setLevel] = useState<string>("All Levels");
+  const [sortBy, setSortBy] = useState<string>("Rating");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const COURSES_PER_PAGE = 6;
 
-  const toggleCategory = (cat: string) => {
-    setCategories(prev => prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]);
-  };
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const handleReset = () => {
     setSearch("");
-    setCategories([]);
-    setLevel("");
-    setPriceRange(5000);
-    setRating(0);
-    setSortBy("Popular");
+    setCategory("All Categories");
+    setLevel("All Levels");
+    setSortBy("Rating");
   };
 
   const filteredCourses = useMemo(() => {
     let result = [...(courses || [])];
 
-    if (search.trim() !== "") {
-      result = result.filter(c => c.title?.toLowerCase().includes(search.toLowerCase()));
+    if (debouncedSearch.trim() !== "") {
+      result = result.filter(c => c.title?.toLowerCase().includes(debouncedSearch.toLowerCase()));
     }
-    if (categories.length > 0) {
-      result = result.filter(c => categories.map(cat => cat.toLowerCase()).includes(c.category?.toLowerCase()));
+    if (category !== "All Categories") {
+      result = result.filter(c => c.category?.toLowerCase() === category.toLowerCase());
     }
-    if (level) {
+    if (level !== "All Levels") {
       result = result.filter(c => c.level?.toLowerCase() === level.toLowerCase());
-    }
-    result = result.filter(c => {
-      const price = typeof c.numericPrice === "string" ? parseFloat(c.numericPrice) : c.numericPrice;
-      return (price || 0) <= priceRange;
-    });
-
-    if (rating > 0) {
-      result = result.filter(c => {
-        const r = typeof c.rating === "string" ? parseFloat(c.rating) : c.rating;
-        return (r || 0) >= rating;
-      });
     }
 
     switch (sortBy) {
-      case "Popular":
-        result.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
-        break;
-      case "Newest":
-        result.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
-        break;
       case "Price":
         result.sort((a, b) => {
           const priceA = typeof a.numericPrice === "string" ? parseFloat(a.numericPrice) : a.numericPrice;
@@ -81,12 +69,12 @@ export const CoursesClient = ({ courses }: { courses: Course[] }) => {
     }
 
     return result;
-  }, [search, categories, level, priceRange, rating, sortBy, courses]);
+  }, [debouncedSearch, category, level, sortBy, courses]);
 
   // Reset pagination to page 1 whenever filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, categories, level, priceRange, rating, sortBy]);
+  }, [debouncedSearch, category, level, sortBy]);
 
   const totalPages = Math.ceil(filteredCourses.length / COURSES_PER_PAGE);
   const paginatedCourses = filteredCourses.slice((currentPage - 1) * COURSES_PER_PAGE, currentPage * COURSES_PER_PAGE);
@@ -110,70 +98,41 @@ export const CoursesClient = ({ courses }: { courses: Course[] }) => {
           </div>
         </div>
 
-        {/* Categories */}
+        {/* Categories Dropdown */}
         <div>
           <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-primary/50 mb-4 block">Categories</label>
-          <div className="space-y-3.5">
-            {CATEGORIES.map(cat => (
-              <label key={cat} className="flex items-center gap-3 cursor-pointer group">
-                <div className={`w-4 h-4 rounded-[4px] border flex items-center justify-center transition-all ${categories.includes(cat) ? 'bg-primary border-primary shadow-[0_0_8px_rgba(91,69,255,0.4)]' : 'border-text-primary/20 bg-surface group-hover:border-primary/50'}`}>
-                  {categories.includes(cat) && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
-                </div>
-                <span className={`text-sm tracking-wide ${categories.includes(cat) ? 'text-white font-medium' : 'text-text-primary/70 group-hover:text-text-primary'}`}>
-                  {cat}
-                </span>
-              </label>
-            ))}
+          <div className="relative">
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full h-11 bg-surface/40 border border-border/60 text-sm text-text-primary rounded-md pl-4 pr-10 appearance-none focus:outline-none focus:bg-surface/80 focus:border-primary/50 transition-colors cursor-pointer"
+            >
+              {CATEGORIES.map(cat => (
+                <option key={cat} value={cat} className="bg-background text-text-primary py-2">{cat}</option>
+              ))}
+            </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-primary/50">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
           </div>
         </div>
 
-        {/* Level */}
+        {/* Level Dropdown */}
         <div>
           <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-primary/50 mb-4 block">Level</label>
-          <div className="flex flex-wrap gap-2.5">
-            {LEVELS.map(l => (
-              <button
-                key={l}
-                onClick={() => setLevel(level === l ? "" : l)}
-                className={`px-3 py-1.5 rounded-md border text-xs font-semibold tracking-wide transition-all ${level === l
-                  ? 'bg-primary/10 border-primary text-primary shadow-sm'
-                  : 'bg-surface/50 border-border/50 text-text-primary/60 hover:text-text-primary hover:border-text-primary/30'
-                  }`}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Price Range */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-primary/50">Price Range</h3>
-            <span className="text-[11px] font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded border border-primary/20">$0 - ${(priceRange).toLocaleString()}</span>
-          </div>
-          <input
-            type="range" min="0" max="5000" step="50"
-            value={priceRange}
-            onChange={(e) => setPriceRange(Number(e.target.value))}
-            className="w-full h-1 bg-surface rounded-full appearance-none outline-none accent-primary cursor-pointer hover:accent-primary/80 transition-all"
-          />
-        </div>
-
-        {/* Rating */}
-        <div>
-          <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-primary/50 mb-4 block">Rating</label>
-          <div className="space-y-4">
-            {[4.5, 4.0].map(r => (
-              <label key={r} className="flex items-center gap-3 cursor-pointer group">
-                <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all ${rating === r ? 'border-primary bg-primary/10' : 'border-text-primary/20 bg-surface group-hover:border-primary/50'}`}>
-                  {rating === r && <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_6px_rgba(91,69,255,0.6)]" />}
-                </div>
-                <span className={`text-sm ${rating === r ? 'text-white font-medium' : 'text-text-primary/70 group-hover:text-text-primary'}`}>
-                  {r.toFixed(1)} & up <span className="text-yellow-500 ml-1">★</span>
-                </span>
-              </label>
-            ))}
+          <div className="relative">
+            <select
+              value={level}
+              onChange={(e) => setLevel(e.target.value)}
+              className="w-full h-11 bg-surface/40 border border-border/60 text-sm text-text-primary rounded-md pl-4 pr-10 appearance-none focus:outline-none focus:bg-surface/80 focus:border-primary/50 transition-colors cursor-pointer"
+            >
+              {LEVELS.map(l => (
+                <option key={l} value={l} className="bg-background text-text-primary py-2">{l}</option>
+              ))}
+            </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-primary/50">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
           </div>
         </div>
 

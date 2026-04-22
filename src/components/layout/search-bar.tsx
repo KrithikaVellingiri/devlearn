@@ -1,9 +1,23 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 
 export const SearchBar = () => {
+  const [query, setQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/courses?search=${encodeURIComponent(query.trim())}`);
+    } else {
+      router.push(`/courses`);
+    }
+  };
+
   return (
-    <div className="relative w-full max-w-sm">
+    <form onSubmit={handleSearch} className="relative w-full max-w-sm">
       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-text-primary/50">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
@@ -14,7 +28,9 @@ export const SearchBar = () => {
         type="search"
         placeholder="Search courses..."
         className="pl-9 bg-background"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
       />
-    </div>
+    </form>
   );
 };
