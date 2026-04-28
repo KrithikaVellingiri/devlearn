@@ -20,7 +20,7 @@ export const Navbar = async () => {
           
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/courses" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Courses</Link>
-            <Link href="#" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Learning Paths</Link>
+            <Link href="/learning-path" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Learning Paths</Link>
             <Link href="/dashboard" className="text-sm font-medium text-text-primary/70 hover:text-text-primary transition-colors">Curriculum</Link>
           </nav>
         </div>
