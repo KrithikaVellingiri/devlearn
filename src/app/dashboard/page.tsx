@@ -7,14 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { supabase } from "@/lib/supabase";
+import { Sidebar } from "@/components/layout/sidebar";
 import {
-  LayoutGrid,
-  BookOpen,
-  Trophy,
-  Terminal,
-  Settings,
-  HelpCircle,
-  LogOut,
   CheckCircle,
   Award,
   Play,
@@ -33,8 +27,8 @@ export default async function DashboardPage() {
   const userName = session.user?.name || session.user?.email?.split('@')[0] || "User";
   const userEmail = session.user?.email || "";
 
-  let enrollments = [];
-  let progressData = [];
+  let enrollments: any[] = [];
+  let progressData: any[] = [];
   let fetchError = false;
 
   try {
@@ -103,61 +97,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-background flex flex-col md:flex-row">
-      {/* Sidebar */}
-      <aside className="w-full md:w-64 border-r border-border bg-surface/50 hidden md:flex flex-col flex-shrink-0">
-        <div className="p-6 border-b border-border flex items-center gap-3">
-          <img src="https://i.pravatar.cc/100" alt="Avatar" className="w-10 h-10 rounded-full object-cover" />
-          <div className="flex flex-col">
-            <span className="font-bold text-sm tracking-tight text-text-primary line-clamp-1">
-              DevLearn Dashboard
-            </span>
-            <span className="text-xs text-text-primary/50">v2.4.0</span>
-          </div>
-        </div>
-
-        <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-          <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-primary/70 hover:text-text-primary hover:bg-surface transition-colors">
-            <LayoutGrid className="w-5 h-5" />
-            <span className="text-sm font-medium">Overview</span>
-          </Link>
-          <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary bg-primary/10 transition-colors">
-            <BookOpen className="w-5 h-5 text-primary" />
-            <span className="text-sm font-medium text-primary">My Courses</span>
-          </Link>
-          <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-primary/70 hover:text-text-primary hover:bg-surface transition-colors">
-            <Trophy className="w-5 h-5" />
-            <span className="text-sm font-medium">Achievements</span>
-          </Link>
-          <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-primary/70 hover:text-text-primary hover:bg-surface transition-colors">
-            <Terminal className="w-5 h-5" />
-            <span className="text-sm font-medium">Cloud Lab</span>
-          </Link>
-          <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-primary/70 hover:text-text-primary hover:bg-surface transition-colors">
-            <Settings className="w-5 h-5" />
-            <span className="text-sm font-medium">Settings</span>
-          </Link>
-        </nav>
-
-        <div className="p-4 mt-auto">
-          <Card className="bg-surface/80 border-border mb-6">
-            <CardContent className="p-4 pt-5">
-              <p className="text-xs font-bold text-text-primary/60 mb-2 tracking-wider">DEVLEARN PRO</p>
-              <Button variant="primary" className="w-full shadow-md border-transparent">
-                UPGRADE TO PRO
-              </Button>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-1">
-            <Link href="#" className="flex items-center gap-3 px-3 py-2 text-sm text-text-primary/60 hover:text-text-primary transition-colors">
-              <HelpCircle className="w-4 h-4" /> Help Center
-            </Link>
-            <Link href="/api/auth/signout" className="flex items-center gap-3 px-3 py-2 text-sm text-text-primary/60 hover:text-text-primary transition-colors">
-              <LogOut className="w-4 h-4" /> Logout
-            </Link>
-          </div>
-        </div>
-      </aside>
+      <Sidebar />
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-6 lg:p-12">

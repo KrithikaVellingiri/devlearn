@@ -20,7 +20,6 @@ import {
   HelpCircle,
   Home,
   CheckCircle2,
-  MenuSquare
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -154,32 +153,32 @@ export default async function LearningPathPage() {
               <span className="text-xs font-bold tracking-widest uppercase text-white">My Path</span>
             </Link>
           </div>
-          <Link href="#" className="flex items-center gap-4 px-8 py-3 text-white/50 hover:text-white transition-colors">
+          <Link href="/cloudlab" className="flex items-center gap-4 px-8 py-3 text-white/50 hover:text-white transition-colors">
             <Terminal className="w-4 h-4" />
             <span className="text-xs font-bold tracking-widest uppercase">Code Lab</span>
           </Link>
-          <Link href="#" className="flex items-center gap-4 px-8 py-3 text-white/50 hover:text-white transition-colors">
+          <Link href="/achievements" className="flex items-center gap-4 px-8 py-3 text-white/50 hover:text-white transition-colors">
             <Award className="w-4 h-4" />
-            <span className="text-xs font-bold tracking-widest uppercase">Certifications</span>
+            <span className="text-xs font-bold tracking-widest uppercase">Achievements</span>
           </Link>
-          <Link href="#" className="flex items-center gap-4 px-8 py-3 text-white/50 hover:text-white transition-colors">
+          <Link href="/overview" className="flex items-center gap-4 px-8 py-3 text-white/50 hover:text-white transition-colors">
             <Activity className="w-4 h-4" />
-            <span className="text-xs font-bold tracking-widest uppercase">Analytics</span>
+            <span className="text-xs font-bold tracking-widest uppercase">Overview</span>
           </Link>
         </nav>
 
         <div className="px-6 mt-auto pb-4">
-          <Button variant="default" className="w-full bg-[#5A4AF4] hover:bg-[#5A4AF4]/90 text-white font-bold text-xs py-5 tracking-wider border-none shadow-[0_4px_20px_rgba(90,74,244,0.3)]">
+          <Button variant="primary" className="w-full bg-[#5A4AF4] hover:bg-[#5A4AF4]/90 text-white font-bold text-xs py-5 tracking-wider border-none shadow-[0_4px_20px_rgba(90,74,244,0.3)]">
             UPGRADE TO EXPERT
           </Button>
         </div>
         
         <div className="px-8 pb-8 space-y-2 border-t border-border/10 pt-6">
-          <Link href="#" className="flex items-center gap-4 py-2 text-[11px] font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors">
-            <MenuSquare className="w-4 h-4" /> Documentation
+          <Link href="/settings" className="flex items-center gap-4 py-2 text-[11px] font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors">
+            <Settings className="w-4 h-4" /> Settings
           </Link>
-          <Link href="#" className="flex items-center gap-4 py-2 text-[11px] font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors">
-            <HelpCircle className="w-4 h-4" /> Help
+          <Link href="/dashboard" className="flex items-center gap-4 py-2 text-[11px] font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors">
+            <HelpCircle className="w-4 h-4" /> Dashboard
           </Link>
         </div>
       </aside>

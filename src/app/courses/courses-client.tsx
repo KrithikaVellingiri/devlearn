@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CourseCard } from "@/components/layout/course-card";
 import { Badge } from "@/components/ui/badge";
@@ -14,63 +14,63 @@ const SORT_OPTIONS = ["Rating", "Price"];
 export const CoursesClient = ({ courses, enrolledIds = [] }: { courses: Course[], enrolledIds?: string[] }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  
-  const initialSearch = searchParams?.get("search") || "";
-  const initialPage = parseInt(searchParams?.get("page") || "1", 10);
 
-  const [search, setSearch] = useState(initialSearch);
-  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
+  // ── URL is the single source of truth ──
+  const urlSearch = searchParams?.get("search") || "";
+  const urlPage = parseInt(searchParams?.get("page") || "1", 10);
+  const currentPage = !isNaN(urlPage) ? urlPage : 1;
+
+  // ── Local state only for the controlled input ──
+  const [search, setSearch] = useState(urlSearch);
   const [category, setCategory] = useState<string>("All Categories");
   const [level, setLevel] = useState<string>("All Levels");
   const [sortBy, setSortBy] = useState<string>("Rating");
-  
-  const currentPage = !isNaN(initialPage) ? initialPage : 1;
+
   const COURSES_PER_PAGE = 6;
 
-  // Debounce search input
+  // Ref to track what we last pushed to URL, preventing loops
+  const lastPushedSearch = useRef(urlSearch);
+
+  // Sync input from URL when URL changes externally (e.g. back/forward navigation)
+  useEffect(() => {
+    if (urlSearch !== lastPushedSearch.current) {
+      // URL changed externally — sync input to match
+      setSearch(urlSearch);
+      lastPushedSearch.current = urlSearch;
+    }
+  }, [urlSearch]);
+
+  // Debounce: push input value to URL after 300ms of inactivity
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearch(search);
+      if (search !== urlSearch) {
+        lastPushedSearch.current = search;
+        const params = new URLSearchParams();
+        if (search) params.set("search", search);
+        // Reset to page 1 on new search
+        const newUrl = `/courses${params.toString() ? `?${params.toString()}` : ""}`;
+        router.replace(newUrl, { scroll: false });
+      }
     }, 300);
     return () => clearTimeout(timer);
-  }, [search]);
-
-  // Sync state from URL (if arrived from external navigation like Homepage SearchBar)
-  useEffect(() => {
-    const urlSearch = searchParams?.get("search") || "";
-    
-    if (urlSearch !== debouncedSearch && urlSearch !== search) {
-      setSearch(urlSearch);
-      setDebouncedSearch(urlSearch);
-    }
-  }, [searchParams]);
-
-  // Sync state to URL safely ONLY when search text actually updates
-  useEffect(() => {
-    const currentUrlSearch = searchParams?.get("search") || "";
-    
-    // Only push if there's an actual state difference to prevent loops
-    if (debouncedSearch !== currentUrlSearch) {
-      const params = new URLSearchParams();
-      if (debouncedSearch) params.set("search", debouncedSearch);
-      
-      const newUrl = `/courses${params.toString() ? `?${params.toString()}` : ""}`;
-      router.push(newUrl, { scroll: false });
-    }
-  }, [debouncedSearch, router, searchParams]);
+  }, [search]); // Only depend on `search` — not on urlSearch/router to avoid re-triggers
 
   const handleReset = () => {
     setSearch("");
     setCategory("All Categories");
     setLevel("All Levels");
     setSortBy("Rating");
+    lastPushedSearch.current = "";
+    router.replace("/courses", { scroll: false });
   };
 
+  // ── Filter and sort using urlSearch for stable reads ──
+  const activeSearch = search; // Use the local state for immediate filtering feel
   const filteredCourses = useMemo(() => {
     let result = [...(courses || [])];
 
-    if (debouncedSearch.trim() !== "") {
-      result = result.filter(c => c.title?.toLowerCase().includes(debouncedSearch.toLowerCase()));
+    if (activeSearch.trim() !== "") {
+      result = result.filter(c => c.title?.toLowerCase().includes(activeSearch.toLowerCase()));
     }
     if (category !== "All Categories") {
       result = result.filter(c => c.category?.toLowerCase() === category.toLowerCase());
@@ -97,15 +97,15 @@ export const CoursesClient = ({ courses, enrolledIds = [] }: { courses: Course[]
     }
 
     return result;
-  }, [debouncedSearch, category, level, sortBy, courses]);
+  }, [activeSearch, category, level, sortBy, courses]);
 
-  // Navigation Page handler wrapper
+  // Navigation Page handler
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams();
-    if (debouncedSearch) params.set("search", debouncedSearch);
+    if (search) params.set("search", search);
     if (newPage > 1) params.set("page", newPage.toString());
     
-    router.push(`/courses${params.toString() ? `?${params.toString()}` : ""}`, { scroll: false });
+    router.replace(`/courses${params.toString() ? `?${params.toString()}` : ""}`, { scroll: false });
   };
 
   const totalPages = Math.ceil(filteredCourses.length / COURSES_PER_PAGE);
