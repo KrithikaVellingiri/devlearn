@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase";
 import { Sidebar } from "@/components/layout/sidebar";
+import { Navbar } from "@/components/layout/navbar";
 import { Trophy, BookOpen, CheckCircle, Flame, Target, Award, Zap, Star, Rocket } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -114,10 +115,12 @@ export default async function AchievementsPage() {
   const locked = achievements.filter(a => !a.check(ctx));
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-background flex flex-col md:flex-row">
-      <Sidebar />
-      <main className="flex-1 overflow-y-auto p-6 lg:p-12">
-        <div className="mb-12">
+    <div className="flex flex-col min-h-screen bg-background text-text-primary font-sans">
+      <Navbar />
+      <div className="flex-1 flex overflow-hidden">
+        <Sidebar />
+        <main className="flex-1 overflow-y-auto p-6 lg:p-12">
+          <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-extrabold text-text-primary tracking-tight mb-2">Achievements</h1>
           <p className="text-text-primary/60 text-sm">{unlocked.length} of {achievements.length} unlocked — keep going!</p>
         </div>
@@ -169,6 +172,7 @@ export default async function AchievementsPage() {
           </section>
         )}
       </main>
+      </div>
     </div>
   );
 }

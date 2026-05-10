@@ -9,9 +9,9 @@
   --color-primary:        #4F46E5;
   --color-primary-dark:   #3730A3;
   --color-accent:         #06B6D4;
-  --color-background:     #0F172A;
-  --color-surface:        #1E293B;
-  --color-surface-light:  #F8FAFC;
+  --color-background:     #0A0D14;
+  --color-surface:        #141824;
+  --color-surface-light:  #1A1E2E;
   --color-text-primary:   #F1F5F9;
   --color-text-secondary: #94A3B8;
   --color-border:         #334155;
@@ -52,9 +52,9 @@
   --dl-primary:        #4F46E5;
   --dl-primary-dark:   #3730A3;
   --dl-accent:         #06B6D4;
-  --dl-background:     #0F172A;
-  --dl-surface:        #1E293B;
-  --dl-surface-light:  #F8FAFC;
+  --dl-background:     #0A0D14;
+  --dl-surface:        #141824;
+  --dl-surface-light:  #1A1E2E;
   --dl-text-primary:   #F1F5F9;
   --dl-text-secondary: #94A3B8;
   --dl-border:         #334155;
@@ -91,7 +91,7 @@ html {
 }
 
 body {
-  background-color: #0F172A;
+  background-color: #0A0D14;
   color: #F1F5F9;
 
   /* Premium font rendering */

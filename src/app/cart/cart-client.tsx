@@ -65,7 +65,7 @@ export const CartClient = () => {
       toast.error("Please sign in", {
         description: "You need to be logged in to complete checkout.",
       });
-      window.location.href = "/api/auth/signin";
+      window.location.href = "/auth/signin";
       return;
     }
 
@@ -90,11 +90,9 @@ export const CartClient = () => {
           }
         } else {
           errorCount++;
-          console.error(`Failed to enroll in ${item.title}:`, result.error);
         }
       } catch (err) {
         errorCount++;
-        console.error(`Error enrolling in ${item.title}:`, err);
       }
     }
 
@@ -242,7 +240,7 @@ export const CartClient = () => {
                   <div className="mb-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
                     <AlertTriangle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
                     <p className="text-xs text-amber-300/80 leading-relaxed">
-                      You need to <Link href="/api/auth/signin" className="underline font-semibold text-amber-300 hover:text-amber-200">sign in</Link> to checkout.
+                      You need to <Link href="/auth/signin" className="underline font-semibold text-amber-300 hover:text-amber-200">sign in</Link> to checkout.
                     </p>
                   </div>
                 )}

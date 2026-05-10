@@ -3,31 +3,17 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
-  Home,
-  BookOpen,
   LayoutGrid,
   Trophy,
-  Terminal,
-  Settings,
-  HelpCircle,
-  LogOut,
-  GraduationCap,
   Map,
 } from "lucide-react";
 
 /* ── Navigation items ──────────────────────────────────────── */
-const NAV_ITEMS = [
-  { label: "Home",          href: "/",              icon: Home },
-  { label: "Courses",       href: "/courses",       icon: BookOpen },
-  { label: "Dashboard",     href: "/dashboard",     icon: GraduationCap },
+const MAIN_NAV_ITEMS = [
   { label: "Learning Path", href: "/learning-path", icon: Map },
   { label: "Overview",      href: "/overview",      icon: LayoutGrid },
   { label: "Achievements",  href: "/achievements",  icon: Trophy },
-  { label: "CloudLab",      href: "/cloudlab",      icon: Terminal },
-  { label: "Settings",      href: "/settings",      icon: Settings },
 ];
 
 /**
@@ -38,75 +24,53 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-full md:w-64 border-r border-border bg-surface/50 hidden md:flex flex-col flex-shrink-0">
+    <aside className="w-[280px] border-r border-border/20 bg-[#06080C] hidden md:flex flex-col flex-shrink-0 relative">
       {/* Header */}
-      <div className="p-6 border-b border-border flex items-center gap-3">
-        <img
-          src="https://i.pravatar.cc/100"
-          alt="Avatar"
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <div className="flex flex-col">
-          <span className="font-bold text-sm tracking-tight text-text-primary line-clamp-1">
-            DevLearn Dashboard
+      <div className="pt-8 pb-6 px-8 flex items-center gap-3">
+        <div className="w-8 h-8 rounded-md bg-[#5A4AF4] flex items-center justify-center shadow-[0_0_15px_rgba(90,74,244,0.4)] flex-shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-white">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        <div className="flex flex-col min-w-0">
+          <span className="font-bold text-sm tracking-tight text-white leading-tight truncate">
+            DevLearn
           </span>
-          <span className="text-xs text-text-primary/50">v2.4.0</span>
+          <span className="text-[10px] text-white/40 tracking-wider">v2.4.0</span>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-        {NAV_ITEMS.map((item) => {
+      {/* Main Navigation */}
+      <nav className="flex-1 overflow-y-auto py-6 space-y-1">
+        {MAIN_NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
 
+          if (isActive) {
+            return (
+              <div key={item.href} className="relative">
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#5A4AF4] rounded-r-md shadow-[0_0_10px_rgba(90,74,244,0.8)]"></div>
+                <Link href={item.href} className="flex items-center gap-4 px-8 py-3 bg-[#1A1E2E]/50 text-white transition-colors">
+                  <Icon className="w-4 h-4 text-[#5A4AF4]" />
+                  <span className="text-xs font-bold tracking-widest uppercase text-white truncate">
+                    {item.label}
+                  </span>
+                </Link>
+              </div>
+            );
+          }
+
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                isActive
-                  ? "text-primary bg-primary/10"
-                  : "text-text-primary/70 hover:text-text-primary hover:bg-surface"
-              }`}
-            >
-              <Icon className={`w-5 h-5 ${isActive ? "text-primary" : ""}`} />
-              <span className={`text-sm font-medium ${isActive ? "text-primary" : ""}`}>
+            <Link key={item.href} href={item.href} className="flex items-center gap-4 px-8 py-3 text-white/50 hover:text-white transition-colors">
+              <Icon className="w-4 h-4" />
+              <span className="text-xs font-bold tracking-widest uppercase truncate">
                 {item.label}
               </span>
             </Link>
           );
         })}
       </nav>
-
-      {/* Bottom section */}
-      <div className="p-4 mt-auto">
-        <Card className="bg-surface/80 border-border mb-6">
-          <CardContent className="p-4 pt-5">
-            <p className="text-xs font-bold text-text-primary/60 mb-2 tracking-wider">
-              DEVLEARN PRO
-            </p>
-            <Button variant="primary" className="w-full shadow-md border-transparent">
-              UPGRADE TO PRO
-            </Button>
-          </CardContent>
-        </Card>
-
-        <div className="space-y-1">
-          <Link
-            href="#"
-            className="flex items-center gap-3 px-3 py-2 text-sm text-text-primary/60 hover:text-text-primary transition-colors"
-          >
-            <HelpCircle className="w-4 h-4" /> Help Center
-          </Link>
-          <Link
-            href="/api/auth/signout"
-            className="flex items-center gap-3 px-3 py-2 text-sm text-text-primary/60 hover:text-text-primary transition-colors"
-          >
-            <LogOut className="w-4 h-4" /> Logout
-          </Link>
-        </div>
-      </div>
     </aside>
   );
 }

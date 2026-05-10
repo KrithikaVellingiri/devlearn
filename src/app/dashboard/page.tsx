@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { supabase } from "@/lib/supabase";
-import { Sidebar } from "@/components/layout/sidebar";
+import { Navbar } from "@/components/layout/navbar";
 import {
   CheckCircle,
   Award,
@@ -96,12 +96,12 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-background flex flex-col md:flex-row">
-      <Sidebar />
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-6 lg:p-12">
-        {/* Header */}
+    <div className="flex flex-col min-h-screen bg-background text-text-primary font-sans">
+      <Navbar />
+      <div className="flex-1 flex overflow-hidden">
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto p-6 lg:p-12">
+          {/* Header */}
         <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8 mb-12">
           <div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-text-primary tracking-tight mb-4">
@@ -270,6 +270,7 @@ export default async function DashboardPage() {
           </div>
         </section>
       </main>
+      </div>
     </div>
   );
 }

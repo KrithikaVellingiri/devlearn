@@ -3,8 +3,21 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SearchBar } from "./search-bar";
 import { CartButton } from "./cart-button";
+import { Settings } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+function UserInitialAvatar({ email }: { email: string }) {
+  const initial = (email?.[0] || "U").toUpperCase();
+  return (
+    <div
+      className="h-8 w-8 rounded-full bg-[#5A4AF4] flex items-center justify-center flex-shrink-0 shadow-[0_0_12px_rgba(90,74,244,0.3)]"
+      aria-label={`Avatar for ${email}`}
+    >
+      <span className="text-xs font-bold text-white leading-none">{initial}</span>
+    </div>
+  );
+}
 
 export const Navbar = async () => {
   const session = await getServerSession(authOptions);
@@ -34,27 +47,30 @@ export const Navbar = async () => {
 
           <div className="flex items-center gap-3">
             {session ? (
-              <div className="flex items-center gap-4 ml-2">
+              <div className="flex items-center gap-3 ml-2">
+                <Link
+                  href="/settings"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-text-primary/50 hover:text-text-primary hover:bg-surface/50 transition-colors"
+                  aria-label="Settings"
+                >
+                  <Settings className="w-4 h-4" />
+                </Link>
                 <div className="flex items-center gap-2">
-                  <img 
-                    src="https://i.pravatar.cc/100" 
-                    alt="User avatar" 
-                    className="h-8 w-8 rounded-full object-cover"
-                  />
-                  <span className="text-sm font-semibold text-text-primary/80 hidden sm:inline-block">
+                  <UserInitialAvatar email={session.user?.email || ""} />
+                  <span className="text-sm font-semibold text-text-primary/80 hidden sm:inline-block max-w-[140px] truncate">
                     {session.user?.email}
                   </span>
                 </div>
-                <Link href="/api/auth/signout">
+                <Link href="/auth/signout">
                   <Button variant="secondary" size="sm">Logout</Button>
                 </Link>
               </div>
             ) : (
               <>
-                <Link href="/api/auth/signin">
+                <Link href="/auth/signin">
                   <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Login</Button>
                 </Link>
-                <Link href="/api/auth/signin">
+                <Link href="/auth/signin">
                   <Button variant="primary" size="sm">Signup</Button>
                 </Link>
               </>

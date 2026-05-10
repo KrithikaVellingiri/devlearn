@@ -17,7 +17,6 @@ export const HeroSection = () => {
           <Link href="/courses">
             <Button size="lg" className="w-full sm:w-auto px-8">Browse Courses</Button>
           </Link>
-          <Button variant="secondary" size="lg" className="w-full sm:w-auto px-8">Start Free</Button>
         </div>
         <div className="flex items-center gap-10 pt-8 border-t border-border mt-8">
           <div>
@@ -34,7 +33,7 @@ export const HeroSection = () => {
           </div>
         </div>
       </div>
-      <div className="flex-1 w-full max-w-2xl lg:ml-auto">
+      <div className="flex-1 w-full relative">
         <div className="rounded-3xl bg-white p-2 shadow-2xl relative overflow-hidden aspect-[4/3] rotate-1 hover:rotate-0 transition-transform duration-500">
            <img 
              src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2070" 
