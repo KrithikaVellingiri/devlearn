@@ -7,7 +7,7 @@ export default function AboutPage() {
       <Navbar />
       <main className="flex-grow container mx-auto px-4 py-20 md:py-28 max-w-3xl">
         <span className="text-[10px] font-bold tracking-[0.2em] text-primary uppercase">Our Story</span>
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-8 mt-3 tracking-tight">About DevLearn</h1>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-text-primary mb-8 mt-3 tracking-tight">About DevLearn</h1>
         
         <div className="space-y-8 text-text-primary/70 text-base leading-relaxed">
           <p>
@@ -19,21 +19,9 @@ export default function AboutPage() {
           <p>
             Whether you&apos;re learning your first framework or diving deep into system design, DevLearn gives you the tools to learn with intention — not just watch videos.
           </p>
-        </div>
-
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="bg-surface/40 border border-border/50 rounded-2xl p-6 text-center">
-            <p className="text-2xl font-bold text-white mb-1">2024</p>
-            <p className="text-[10px] font-bold text-text-primary/50 tracking-wider uppercase">Founded</p>
-          </div>
-          <div className="bg-surface/40 border border-border/50 rounded-2xl p-6 text-center">
-            <p className="text-2xl font-bold text-white mb-1">100%</p>
-            <p className="text-[10px] font-bold text-text-primary/50 tracking-wider uppercase">Project-Based</p>
-          </div>
-          <div className="bg-surface/40 border border-border/50 rounded-2xl p-6 text-center">
-            <p className="text-2xl font-bold text-white mb-1">Open</p>
-            <p className="text-[10px] font-bold text-text-primary/50 tracking-wider uppercase">Community</p>
-          </div>
+          <p>
+            DevLearn is a focused frontend engineering and learning platform project — built to demonstrate modern web development practices, clean architecture, and thoughtful product design.
+          </p>
         </div>
       </main>
       <Footer />

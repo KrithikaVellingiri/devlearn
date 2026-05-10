@@ -22,7 +22,7 @@ export default function CourseError({
         <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
           <AlertCircle className="w-8 h-8 text-red-400" />
         </div>
-        <h2 className="text-2xl font-extrabold text-white mb-2 tracking-tight">Failed to load courses</h2>
+        <h2 className="text-2xl font-extrabold text-text-primary mb-2 tracking-tight">Failed to load courses</h2>
         <p className="text-text-primary/60 mb-8 leading-relaxed">
           We encountered an unexpected error while loading the catalog. Please try again.
         </p>

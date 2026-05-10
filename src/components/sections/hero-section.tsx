@@ -6,7 +6,7 @@ export const HeroSection = () => {
   return (
     <section className="container mx-auto px-4 py-16 md:py-24 flex flex-col lg:flex-row items-center gap-12">
       <div className="flex-1 space-y-8">
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-text-primary leading-[1.1]">
           Master Your <br />
           <span className="text-primary leading-[1.1]">Future</span>
         </h1>

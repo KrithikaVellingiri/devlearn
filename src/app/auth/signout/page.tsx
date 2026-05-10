@@ -24,7 +24,7 @@ export default function SignOutPage() {
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
             <LogOut className="w-7 h-7 text-primary" />
           </div>
-          <h1 className="text-xl font-bold text-white mb-2">Sign out?</h1>
+          <h1 className="text-xl font-bold text-text-primary mb-2">Sign out?</h1>
           <p className="text-sm text-text-primary/60 mb-8">
             Are you sure you want to sign out of your DevLearn account?
           </p>

@@ -119,16 +119,16 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <div className="flex bg-surface/30 rounded-2xl border border-border/50 divide-x divide-border/50 p-6 shadow-sm">
-            <div className="px-6 flex flex-col justify-center text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 bg-surface/30 rounded-2xl border border-border/50 divide-y sm:divide-y-0 sm:divide-x divide-border/50 p-6 shadow-sm w-full xl:w-auto">
+            <div className="py-4 sm:py-0 px-6 flex flex-col justify-center text-center">
               <span className="text-[10px] font-bold text-text-primary/50 tracking-wider mb-1">ENROLLED</span>
               <span className="text-3xl font-bold text-text-primary">{inProgressCourses.length}</span>
             </div>
-            <div className="px-6 flex flex-col justify-center text-center">
+            <div className="py-4 sm:py-0 px-6 flex flex-col justify-center text-center">
               <span className="text-[10px] font-bold text-text-primary/50 tracking-wider mb-1">COMPLETED</span>
               <span className="text-3xl font-bold text-text-primary">{completedCourses.length}</span>
             </div>
-            <div className="px-6 flex flex-col justify-center text-center">
+            <div className="py-4 sm:py-0 px-6 flex flex-col justify-center text-center">
               <span className="text-[10px] font-bold text-text-primary/50 tracking-wider mb-1">STREAK</span>
               <span className="text-3xl font-bold text-cyan-400">18 <span className="text-sm font-bold text-cyan-400/50">DAYS</span></span>
             </div>
@@ -155,7 +155,7 @@ export default async function DashboardPage() {
                 <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mb-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-400"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                 </div>
-                <h3 className="text-xl font-bold text-white">Something went wrong. Please try again.</h3>
+                <h3 className="text-xl font-bold text-text-primary">Something went wrong. Please try again.</h3>
                 <p className="text-text-primary/60 text-sm text-center max-w-md">
                   We couldn't connect to our servers to load your enrolled courses.
                 </p>
@@ -198,7 +198,7 @@ export default async function DashboardPage() {
                     <img src={course.imageUrl} alt={course.title} className="object-cover w-full h-full opacity-60 group-hover:scale-105 transition-transform duration-700" />
                   </div>
                   <CardContent className="flex flex-col flex-grow p-6 pt-5">
-                    <h3 className="font-bold text-lg leading-tight text-white mb-2 line-clamp-2">{course.title}</h3>
+                    <h3 className="font-bold text-lg leading-tight text-text-primary mb-2 line-clamp-2">{course.title}</h3>
                     <p className="text-sm text-text-primary/60 line-clamp-2 mb-2">{course.description}</p>
                     <p className="text-xs text-text-primary/40 mb-4">
                       By {course.instructor} • Enrolled {course.enrolledAt}
@@ -206,7 +206,7 @@ export default async function DashboardPage() {
                     
                     {course.totalLessons > 0 && (
                       <div className="mb-4">
-                        <div className="flex justify-between items-center text-xs font-bold text-white mb-2">
+                        <div className="flex justify-between items-center text-xs font-bold text-text-primary mb-2">
                           <span className="text-text-primary/60">{course.completedLessonsCount} / {course.totalLessons} lessons</span>
                           <span className="text-cyan-400">{course.progressPercent}%</span>
                         </div>
@@ -236,16 +236,16 @@ export default async function DashboardPage() {
             <h2 className="text-2xl font-bold text-text-primary">Completed</h2>
           </div>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {completedCourses.map((course: any) => (
               <Link href={`/courses/${course.id}/learn`} key={course.id} className="block group">
-                <Card className="bg-surface/50 border-border/50 group-hover:bg-surface group-hover:border-primary/50 transition-colors flex flex-col sm:flex-row items-center p-5 gap-6">
-                  <div className="w-14 h-14 bg-background rounded-2xl flex items-center justify-center flex-shrink-0 border border-border/60 shadow-sm">
+                <Card className="bg-surface/50 border-border/50 group-hover:bg-surface group-hover:border-primary/50 transition-colors flex flex-col items-center sm:items-start p-6 gap-5 h-full">
+                  <div className="w-14 h-14 bg-background rounded-2xl flex items-center justify-center flex-shrink-0 border border-border/60 shadow-sm self-start">
                     <CheckCircle className="w-6 h-6 text-cyan-400" />
                   </div>
                   
-                  <div className="flex-1 text-center sm:text-left">
-                    <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                  <div className="flex-1 text-left w-full">
+                    <div className="flex items-center justify-start gap-2 mb-2">
                       <span className="text-[10px] font-bold text-text-primary/50 tracking-widest uppercase">
                         {course.category}
                       </span>
@@ -253,14 +253,14 @@ export default async function DashboardPage() {
                         COMPLETED
                       </Badge>
                     </div>
-                    <h3 className="font-bold text-white text-lg group-hover:text-primary transition-colors">{course.title}</h3>
-                    <p className="text-xs font-mono text-text-primary/50 mt-1">
-                      Issued on {course.issued} • Grade: {course.grade}
+                    <h3 className="font-bold text-text-primary text-lg group-hover:text-primary transition-colors leading-tight mb-2">{course.title}</h3>
+                    <p className="text-xs font-mono text-text-primary/50 mt-auto">
+                      Issued {course.issued}
                     </p>
                   </div>
                   
-                  <div className="mt-4 sm:mt-0 flex-shrink-0 w-full sm:w-auto">
-                    <Button variant="ghost" className="w-full sm:w-auto text-primary hover:text-primary hover:bg-primary/10 gap-2 font-medium border-transparent">
+                  <div className="mt-auto pt-4 w-full">
+                    <Button variant="ghost" className="w-full text-primary hover:text-primary hover:bg-primary/10 gap-2 font-medium border-transparent">
                       <Award className="w-4 h-4" /> View Certificate
                     </Button>
                   </div>

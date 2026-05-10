@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/sections/footer";
+
 import { CoursesClient } from "./courses-client";
 import { supabase } from "@/lib/supabase";
 import { getServerSession } from "next-auth";
@@ -32,7 +32,7 @@ export default async function CoursesPage() {
       <main className="flex-grow pt-4">
         <CoursesClient courses={courses || []} enrolledIds={enrolledIds} />
       </main>
-      <Footer />
+
     </div>
   );
 }

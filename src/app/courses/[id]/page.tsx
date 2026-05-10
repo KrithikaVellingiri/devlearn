@@ -1,6 +1,6 @@
 import React from "react";
 import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/sections/footer";
+
 import { supabase } from "@/lib/supabase";
 import { CourseDetailClient } from "./course-detail-client";
 import { getServerSession } from "next-auth";
@@ -43,7 +43,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ i
             userEmail={userEmail}
         />
       </main>
-      <Footer />
+
     </div>
   );
 }

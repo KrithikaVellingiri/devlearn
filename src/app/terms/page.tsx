@@ -7,34 +7,34 @@ export default function TermsPage() {
       <Navbar />
       <main className="flex-grow container mx-auto px-4 py-20 md:py-28 max-w-3xl">
         <span className="text-[10px] font-bold tracking-[0.2em] text-primary uppercase">Legal</span>
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-8 mt-3 tracking-tight">Terms of Service</h1>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-text-primary mb-8 mt-3 tracking-tight">Terms of Service</h1>
         
         <div className="space-y-8 text-text-primary/70 text-sm leading-relaxed">
           <section>
-            <h2 className="text-lg font-bold text-white mb-3">Acceptance of Terms</h2>
+            <h2 className="text-lg font-bold text-text-primary mb-3">Usage</h2>
             <p>
-              By accessing or using DevLearn, you agree to be bound by these terms. If you do not agree, please do not use the platform.
+              DevLearn is a learning platform project. By using it, you agree to use the platform respectfully and not misuse any features or content provided.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-white mb-3">Use of Service</h2>
+            <h2 className="text-lg font-bold text-text-primary mb-3">Content</h2>
             <p>
-              DevLearn grants you a personal, non-transferable license to access and use our courses and learning tools. Content is for your individual educational use and may not be redistributed or resold.
+              Course content on DevLearn is for personal educational use. Please do not redistribute or resell any materials found on the platform.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-white mb-3">Account Responsibility</h2>
+            <h2 className="text-lg font-bold text-text-primary mb-3">Accounts</h2>
             <p>
-              You are responsible for maintaining the security of your account credentials. Please notify us immediately if you suspect unauthorized access to your account.
+              You are responsible for keeping your login credentials secure. If you believe your account has been compromised, please contact us.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-white mb-3">Modifications</h2>
+            <h2 className="text-lg font-bold text-text-primary mb-3">Changes</h2>
             <p>
-              We may update these terms from time to time. Continued use of the platform after changes constitutes acceptance of the updated terms.
+              These terms may be updated as the project evolves. Continued use of DevLearn after updates means you accept the revised terms.
             </p>
           </section>
 

@@ -9,6 +9,7 @@ import { CourseCard } from "@/components/layout/course-card";
 import { useCartStore } from "@/store/cartStore";
 import { checkEnrollment } from "@/services/enrollments";
 import { getCompletedLessons } from "@/services/progress";
+import { formatPrice } from "@/lib/formatters";
 import { toast } from "sonner";
 import {
   Star,
@@ -89,6 +90,13 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
   };
 
   const handleAddToCart = async () => {
+    if (isEnrolled) {
+      toast("Already enrolled", {
+        description: "You already own this course.",
+      });
+      return;
+    }
+
     if (isInCart) {
       toast("Already in cart", {
         description: "This course is already in your cart.",
@@ -115,6 +123,14 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
   };
 
   const handleAddToCartAndGo = async () => {
+    if (isEnrolled) {
+      toast("Already enrolled", {
+        description: "You already own this course.",
+      });
+      router.push("/cart");
+      return;
+    }
+
     if (!isInCart) {
       setIsAddingToCart(true);
       await new Promise((resolve) => setTimeout(resolve, 400));
@@ -152,14 +168,14 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
               </span>
             </div>
 
-            <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight leading-tight mb-6">
+            <h1 className="text-3xl md:text-5xl font-extrabold text-text-primary tracking-tight leading-tight mb-6">
               {course.title}
             </h1>
 
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-10 text-sm text-text-primary/80">
               <div className="flex items-center gap-1.5">
                 <Star className="w-4 h-4 fill-cyan-400 text-cyan-400" />
-                <span className="font-bold text-white">{course.rating}</span>
+                <span className="font-bold text-text-primary">{course.rating}</span>
                 <span className="text-text-primary/60">({course.reviewsCountLabel || `${course.reviewsCount} ratings`})</span>
               </div>
               <div className="flex items-center gap-2">
@@ -174,7 +190,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
 
             {/* Course Overview */}
             <div className="mb-12">
-              <h2 className="text-xl font-bold text-white mb-4">Course Overview</h2>
+              <h2 className="text-xl font-bold text-text-primary mb-4">Course Overview</h2>
               <p className="text-text-primary/80 leading-relaxed">
                 {course.description}
               </p>
@@ -184,7 +200,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
             {(course.curriculum?.length ?? 0) > 0 && (
             <div className="mb-12">
               <div className="flex items-end justify-between mb-6">
-                <h2 className="text-xl font-bold text-white">Curriculum</h2>
+                <h2 className="text-xl font-bold text-text-primary">Curriculum</h2>
                 <div className="text-xs font-bold text-cyan-400 tracking-wider">
                   {course.curriculum.length} Chapters • {totalLessons} Lessons
                 </div>
@@ -192,7 +208,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
 
               {isEnrolled && totalLessons > 0 && (
                 <div className="mb-6">
-                  <div className="flex justify-between items-center text-sm font-bold text-white mb-2">
+                  <div className="flex justify-between items-center text-sm font-bold text-text-primary mb-2">
                     <span>Your Progress</span>
                     <span className="text-cyan-400">{progressPercent}%</span>
                   </div>
@@ -214,7 +230,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                     >
                       <div className="flex items-center gap-4">
                         <span className="text-sm font-bold text-text-primary/50 font-mono tracking-widest">{section.id}</span>
-                        <span className="font-bold text-white">{section.title}</span>
+                        <span className="font-bold text-text-primary">{section.title}</span>
                       </div>
                       {openSections[section.id] ? (
                         <ChevronUp className="w-5 h-5 text-text-primary/50" />
@@ -258,7 +274,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
 
             {/* Instructor */}
             <div className="mb-12">
-              <h2 className="text-xl font-bold text-white mb-6">Your Instructor</h2>
+              <h2 className="text-xl font-bold text-text-primary mb-6">Your Instructor</h2>
 
               <Card className="bg-surface/30 border-border/50 p-6 flex flex-col md:flex-row gap-6">
                 {course.instructor?.avatar ? (
@@ -274,7 +290,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                   </div>
                 )}
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-1">{course.instructor?.name || "Unknown Instructor"}</h3>
+                  <h3 className="text-lg font-bold text-text-primary mb-1">{course.instructor?.name || "Unknown Instructor"}</h3>
                   {course.instructor?.title && (
                   <p className="text-[10px] text-cyan-400 font-bold tracking-widest uppercase mb-4">
                     {course.instructor.title}
@@ -307,7 +323,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
             {(course.reviews?.length ?? 0) > 0 && (
             <div className="mb-12">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-white">Student Feedback</h2>
+                <h2 className="text-xl font-bold text-text-primary">Student Feedback</h2>
                 <button className="text-xs text-primary font-bold tracking-wider hover:underline">
                   VIEW ALL REVIEWS
                 </button>
@@ -322,7 +338,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                           {review.initials}
                         </div>
                         <div>
-                          <h4 className="text-sm font-bold text-white">{review.name}</h4>
+                          <h4 className="text-sm font-bold text-text-primary">{review.name}</h4>
                           <p className="text-[10px] text-text-primary/50">{review.role}</p>
                         </div>
                       </div>
@@ -357,8 +373,8 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                     onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.jpg'; }}
                   />
                   <div className="absolute inset-0 z-20 flex items-center justify-center">
-                    <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:bg-primary/80 transition-colors">
-                      <Play className="w-6 h-6 text-white ml-1 fill-current" />
+                    <div className="w-14 h-14 bg-text-primary/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:bg-primary/80 transition-colors">
+                      <Play className="w-6 h-6 text-text-primary ml-1 fill-current" />
                     </div>
                   </div>
                 </div>
@@ -366,10 +382,10 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                 <CardContent className="p-6">
                   {/* Price Section */}
                   <div className="flex items-center gap-4 mb-6">
-                    <span className="text-3xl font-extrabold text-white">{course.price || "$0.00"}</span>
+                    <span className="text-3xl font-extrabold text-text-primary">{formatPrice(course.numericPrice || course.price || 0)}</span>
                     {course.originalPrice != null && (
                     <span className="text-text-primary/40 line-through text-sm font-medium pr-2">
-                      ${course.originalPrice}
+                      {formatPrice(course.originalPrice)}
                     </span>
                     )}
                     {course.discount && (
@@ -419,7 +435,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                           <Button
                             onClick={handleAddToCart}
                             disabled={isAddingToCart}
-                            className="w-full py-6 text-base font-bold bg-surface border border-border/80 hover:bg-surface/80 hover:border-text-primary/30 transition-all text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-6 text-base font-bold bg-surface border border-border/80 hover:bg-surface/80 hover:border-text-primary/30 transition-all text-text-primary disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {isAddingToCart ? (
                               <>
@@ -448,7 +464,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                   {/* Course Includes */}
                   {(course.includes?.length ?? 0) > 0 && (
                   <div>
-                    <h4 className="text-[10px] font-bold text-white tracking-widest uppercase mb-4">
+                    <h4 className="text-[10px] font-bold text-text-primary tracking-widest uppercase mb-4">
                       THIS COURSE INCLUDES:
                     </h4>
                     <ul className="space-y-3">
@@ -476,7 +492,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
       {/* Related Courses Section */}
       <div className="bg-background">
         <div className="container mx-auto px-4 py-16">
-          <h2 className="text-2xl font-bold text-white mb-8">Students also viewed</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-8">Students also viewed</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {relatedCourses?.map(relCourse => (

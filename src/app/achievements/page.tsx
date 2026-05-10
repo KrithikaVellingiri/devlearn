@@ -142,7 +142,7 @@ export default async function AchievementsPage() {
                   <CardContent className="p-6 flex items-start gap-4">
                     <div className={`w-14 h-14 rounded-xl ${a.bgColor} flex items-center justify-center shrink-0 ${a.color}`}>{a.icon}</div>
                     <div>
-                      <h3 className="font-bold text-white text-base mb-1">{a.title}</h3>
+                      <h3 className="font-bold text-text-primary text-base mb-1">{a.title}</h3>
                       <p className="text-xs text-text-primary/60">{a.description}</p>
                     </div>
                   </CardContent>

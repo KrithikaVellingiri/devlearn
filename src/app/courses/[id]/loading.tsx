@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/sections/footer";
+
 
 export default function LoadingCourseDetail() {
   return (
@@ -50,7 +50,7 @@ export default function LoadingCourseDetail() {
           </div>
         </div>
       </main>
-      <Footer />
+
     </div>
   );
 }

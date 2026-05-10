@@ -7,34 +7,34 @@ export default function PrivacyPage() {
       <Navbar />
       <main className="flex-grow container mx-auto px-4 py-20 md:py-28 max-w-3xl">
         <span className="text-[10px] font-bold tracking-[0.2em] text-primary uppercase">Legal</span>
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-8 mt-3 tracking-tight">Privacy Policy</h1>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-text-primary mb-8 mt-3 tracking-tight">Privacy Policy</h1>
         
         <div className="space-y-8 text-text-primary/70 text-sm leading-relaxed">
           <section>
-            <h2 className="text-lg font-bold text-white mb-3">What We Collect</h2>
+            <h2 className="text-lg font-bold text-text-primary mb-3">What We Collect</h2>
             <p>
-              We collect only the information necessary to provide our service: your email address for authentication, course progress data to track your learning, and basic usage analytics to improve the platform.
+              DevLearn collects your email address for authentication and stores course progress data to track your learning. We may also collect basic usage data to help improve the platform.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-white mb-3">How We Use Your Data</h2>
+            <h2 className="text-lg font-bold text-text-primary mb-3">How We Use Your Data</h2>
             <p>
-              Your data is used exclusively to personalize your learning experience — tracking progress, calculating streaks, and unlocking achievements. We do not sell, share, or monetize your personal information.
+              Your data is used to personalize your learning experience — tracking progress, calculating streaks, and unlocking achievements. We do not sell or share your personal information with third parties.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-white mb-3">Data Security</h2>
+            <h2 className="text-lg font-bold text-text-primary mb-3">Data Storage</h2>
             <p>
-              All data is encrypted in transit and at rest. We use industry-standard security practices and regularly audit our infrastructure to protect your information.
+              Data is stored using Supabase and transmitted over HTTPS. We follow standard security practices, but as a portfolio project, DevLearn is not intended to handle sensitive personal data beyond basic authentication.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-white mb-3">Your Rights</h2>
+            <h2 className="text-lg font-bold text-text-primary mb-3">Your Rights</h2>
             <p>
-              You can request a copy of your data or ask us to delete your account at any time by contacting us at hello@devlearn.dev. We will process your request within 30 days.
+              You can request deletion of your account and associated data at any time by reaching out via the contact page.
             </p>
           </section>
 

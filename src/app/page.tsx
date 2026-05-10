@@ -5,6 +5,8 @@ import { StatsBanner } from "@/components/sections/stats-banner";
 import { WhyDevLearnSection } from "@/components/sections/enterprise-banner";
 import { Footer } from "@/components/sections/footer";
 import { supabase } from "@/lib/supabase";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 
 // Removed hardcoded fallbackFeatured and trendingCourses 
@@ -16,6 +18,18 @@ export default async function Home() {
   let fetchError = false;
 
   try {
+    const session = await getServerSession(authOptions);
+    const userEmail = session?.user?.email;
+
+    let enrolledIds: string[] = [];
+    if (userEmail) {
+      const { data: enrollments } = await supabase
+        .from("enrollments")
+        .select("course_id")
+        .eq("user_email", userEmail);
+      enrolledIds = enrollments?.map(e => e.course_id) || [];
+    }
+
     const { data: dbCourses, error } = await supabase
       .from("courses")
       .select("*")
@@ -33,7 +47,8 @@ export default async function Home() {
         rating: c.rating ?? 0,
         reviews: c.reviewsCount ?? 0,
         price: c.price || "$0.00",
-        imageUrl: c.image || "/placeholder.jpg"
+        imageUrl: c.image || "/placeholder.jpg",
+        enrolled: enrolledIds.includes(c.id)
       }));
     }
   } catch (err) {

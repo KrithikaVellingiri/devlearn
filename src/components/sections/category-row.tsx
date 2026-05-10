@@ -31,7 +31,7 @@ export const CategoryRow: React.FC<CategoryRowProps> = ({
               onClick={() => onSelectCategory?.(cat)}
               className={`px-5 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
                 isActive 
-                  ? "bg-primary text-white" 
+                  ? "bg-primary text-text-primary" 
                   : "bg-surface text-text-primary/80 border border-border hover:bg-surface/80"
               }`}
             >

@@ -152,16 +152,38 @@ export default async function LearningPathPage() {
   const weeklyCompleted = Math.min(lessonsCompletedThisWeek, weeklyGoal);
   const weeklyPercent = Math.round((weeklyCompleted / weeklyGoal) * 100);
 
-  // Heatmap Generator — REAL DATA ONLY, no fake randomness
+  // Heatmap Generator — Rolling 12 months, REAL DATA ONLY
+  // Compute the start date: 51 weeks + today's weekday offset ago (Sunday-aligned)
+  const today = new Date();
+  const todayDay = today.getDay(); // 0=Sun
+  const startDate = new Date(today);
+  startDate.setDate(today.getDate() - (51 * 7 + todayDay));
+
   const heatmapData = Array.from({length: 52}).map((_, weekIndex) => {
     return Array.from({length: 7}).map((_, dayIndex) => {
-      const dateCheck = new Date();
-      dateCheck.setDate(dateCheck.getDate() - (364 - (weekIndex * 7 + dayIndex)));
-      const dateStr = dateCheck.toISOString().split('T')[0];
+      const d = new Date(startDate);
+      d.setDate(startDate.getDate() + (weekIndex * 7 + dayIndex));
+      // Don't count future dates
+      if (d > today) return -1;
+      const dateStr = d.toISOString().split('T')[0];
       const hits = progressData.filter(p => p.created_at.startsWith(dateStr)).length;
       return hits;
     });
   });
+
+  // Dynamic month labels based on rolling window
+  const monthLabels: { label: string; weekIndex: number }[] = [];
+  const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  let lastMonth = -1;
+  for (let w = 0; w < 52; w++) {
+    const d = new Date(startDate);
+    d.setDate(startDate.getDate() + w * 7);
+    const m = d.getMonth();
+    if (m !== lastMonth) {
+      monthLabels.push({ label: monthNames[m], weekIndex: w });
+      lastMonth = m;
+    }
+  }
 
   const hasAnyActivity = progressData.length > 0;
 
@@ -211,52 +233,52 @@ export default async function LearningPathPage() {
           <div className="flex-1 min-w-0 flex flex-col gap-8">
             
             {/* Hero / Header Row */}
-            <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-8">
-              <div className="flex-1">
+            <div className="flex flex-col gap-6 xl:gap-8">
+              <div className="w-full">
                 <span className="text-[#00F0FF] text-[10px] font-bold tracking-[0.2em] uppercase">Developer Journey</span>
-                <h1 className="text-4xl sm:text-5xl font-extrabold text-white mt-2 tracking-tight">Learning Path</h1>
+                <h1 className="text-4xl sm:text-5xl font-extrabold text-text-primary mt-2 tracking-tight">Learning Path</h1>
                 
-                <div className="mt-8">
-                  <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden relative">
+                <div className="mt-8 max-w-xl">
+                  <div className="w-full h-2 bg-text-primary/5 rounded-full overflow-hidden relative">
                     <div className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-[#5A4AF4] to-[#00F0FF] rounded-full shadow-[0_0_10px_rgba(0,240,255,0.4)]" style={{width: `${overallProgress}%`}}></div>
                   </div>
                   <div className="flex justify-between items-center mt-3">
-                    <span className="text-[9px] font-bold text-white/40 tracking-widest uppercase">Path Progress</span>
+                    <span className="text-[9px] font-bold text-text-primary/40 tracking-widest uppercase">Path Progress</span>
                     <span className="text-[10px] font-bold text-[#00F0FF] tracking-widest">{overallProgress}% COMPLETED</span>
                   </div>
                 </div>
               </div>
 
               {/* Stats Box Row */}
-              <div className="flex flex-wrap items-center gap-4 shrink-0 mt-6 xl:mt-0">
-                <div className="bg-[#141824] border border-white/5 rounded-xl p-5 w-32 flex flex-col items-center justify-center relative overflow-hidden group hover:border-white/10 transition-colors">
+              <div className="flex items-stretch gap-4">
+                <div className="flex-1 min-w-0 bg-surface border border-border/50 rounded-xl p-5 flex flex-col items-center justify-center relative overflow-hidden group hover:border-border transition-colors">
                   <Flame className="w-6 h-6 text-[#FF6C37] mb-2 drop-shadow-[0_0_8px_rgba(255,108,55,0.6)]" />
-                  <span className="text-2xl font-bold text-white leading-none mb-1">{currentStreak}</span>
-                  <span className="text-[8px] font-bold text-white/30 tracking-[0.2em] uppercase">Day Streak</span>
+                  <span className="text-2xl font-bold text-text-primary leading-none mb-1">{currentStreak}</span>
+                  <span className="text-[8px] font-bold text-text-primary/30 tracking-[0.2em] uppercase text-center">Day Streak</span>
                 </div>
-                <div className="bg-[#141824] border border-white/5 rounded-xl p-5 w-36 flex flex-col items-center justify-center hover:border-white/10 transition-colors">
+                <div className="flex-1 min-w-0 bg-surface border border-border/50 rounded-xl p-5 flex flex-col items-center justify-center hover:border-border transition-colors">
                   <Library className="w-6 h-6 text-[#00F0FF] mb-2 drop-shadow-[0_0_8px_rgba(0,240,255,0.6)]" />
-                  <span className="text-2xl font-bold text-white leading-none mb-1">{lessonsCompletedThisWeek}</span>
-                  <span className="text-[8px] font-bold text-white/30 tracking-[0.2em] uppercase">Lessons/Week</span>
+                  <span className="text-2xl font-bold text-text-primary leading-none mb-1">{lessonsCompletedThisWeek}</span>
+                  <span className="text-[8px] font-bold text-text-primary/30 tracking-[0.2em] uppercase text-center">Lessons/Week</span>
                 </div>
-                <div className="bg-[#141824] border border-white/5 rounded-xl p-5 w-32 flex flex-col items-center justify-center hover:border-white/10 transition-colors">
+                <div className="flex-1 min-w-0 bg-surface border border-border/50 rounded-xl p-5 flex flex-col items-center justify-center hover:border-border transition-colors">
                   <Hourglass className="w-6 h-6 text-yellow-400 mb-2 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]" />
-                  <span className="text-2xl font-bold text-white leading-none mb-1">{studyHoursTotal}</span>
-                  <span className="text-[8px] font-bold text-white/30 tracking-[0.2em] uppercase">Study Hours</span>
+                  <span className="text-2xl font-bold text-text-primary leading-none mb-1">{studyHoursTotal}</span>
+                  <span className="text-[8px] font-bold text-text-primary/30 tracking-[0.2em] uppercase text-center">Study Hours</span>
                 </div>
               </div>
             </div>
 
             {/* Commitment History */}
-            <div className="bg-[#141824] border border-white/5 rounded-2xl p-8 shadow-xl">
-              <div className="flex justify-between items-center mb-8">
+            <div className="bg-surface border border-border/50 rounded-2xl p-8 shadow-xl">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
                 <div className="flex items-center gap-3">
                   <LayoutGrid className="w-5 h-5 text-[#5A4AF4]" />
-                  <h3 className="text-lg font-bold text-white">Commitment History</h3>
+                  <h3 className="text-lg font-bold text-text-primary">Commitment History</h3>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] text-white/30 font-bold uppercase tracking-wider">
+                <div className="flex items-center gap-2 text-[10px] text-text-primary/30 font-bold uppercase tracking-wider">
                   Less
-                  <div className="flex gap-1">
+                  <div className="flex gap-1 flex-wrap">
                     <div className="w-3 h-3 rounded-[2px] bg-[#222738]"></div>
                     <div className="w-3 h-3 rounded-[2px] bg-[#3B3299]"></div>
                     <div className="w-3 h-3 rounded-[2px] bg-[#5A4AF4]"></div>
@@ -267,68 +289,66 @@ export default async function LearningPathPage() {
                 </div>
               </div>
 
-              {hasAnyActivity ? (
-                <div className="overflow-x-auto overflow-y-hidden pb-4 custom-scrollbar">
-                  <div className="min-w-[800px] flex flex-col gap-1.5">
-                    {Array.from({length: 7}).map((_, dayIndex) => (
-                      <div key={dayIndex} className="flex gap-1.5">
-                        {heatmapData.map((week, weekIndex) => {
-                          const val = week[dayIndex];
-                          let bg = "bg-[#222738]";
-                          if (val === 1) bg = "bg-[#3B3299]";
-                          if (val === 2) bg = "bg-[#5A4AF4] shadow-[0_0_8px_rgba(90,74,244,0.4)]";
-                          if (val > 2) bg = "bg-[#C1BAFF] shadow-[0_0_10px_rgba(193,186,255,0.6)]";
+              <div className="overflow-x-auto overflow-y-hidden pb-4 custom-scrollbar">
+                <div className="min-w-[1050px] flex flex-col gap-1.5 pr-4">
+                  {Array.from({length: 7}).map((_, dayIndex) => (
+                    <div key={dayIndex} className="flex gap-1.5">
+                      {heatmapData.map((week, weekIndex) => {
+                        const val = week[dayIndex];
+                        if (val === -1) {
+                          return <div key={`${weekIndex}-${dayIndex}`} className="w-3.5 h-3.5 rounded-[3px] opacity-0 cursor-default"></div>;
+                        }
+                        
+                        let bg = "bg-surface-light border border-border/50";
+                        if (val === 1) bg = "bg-[#3B3299]";
+                        if (val === 2) bg = "bg-[#5A4AF4] shadow-[0_0_8px_rgba(90,74,244,0.4)]";
+                        if (val > 2) bg = "bg-[#C1BAFF] shadow-[0_0_10px_rgba(193,186,255,0.6)]";
 
-                          return (
-                            <div key={`${weekIndex}-${dayIndex}`} className={`w-3.5 h-3.5 rounded-[3px] ${bg} transition-colors hover:ring-1 hover:ring-white/50 cursor-pointer`}></div>
-                          )
-                        })}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex justify-between mt-4 text-[9px] font-bold text-white/30 uppercase tracking-[0.2em] px-2 min-w-[800px]">
-                    <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
-                  </div>
+                        return (
+                          <div key={`${weekIndex}-${dayIndex}`} className={`w-3.5 h-3.5 rounded-[3px] ${bg} transition-colors hover:ring-1 hover:ring-white/50 cursor-pointer`} title={`${val} lesson${val !== 1 ? 's' : ''} completed`}></div>
+                        )
+                      })}
+                    </div>
+                  ))}
                 </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <LayoutGrid className="w-8 h-8 text-white/20 mb-4" />
-                  <h4 className="text-sm font-bold text-white/50 mb-2">No learning activity yet</h4>
-                  <p className="text-xs text-white/30 max-w-sm">Complete lessons to build your learning history. Your progress will appear here as a contribution heatmap.</p>
+                <div className="relative h-4 mt-4 text-[9px] font-bold text-text-primary/40 uppercase tracking-[0.2em] min-w-[1050px]">
+                  {monthLabels.map((m, i) => (
+                    <span key={i} className="absolute" style={{ left: `${m.weekIndex * 20}px` }}>{m.label}</span>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
 
             {/* Enrolled Courses List */}
             <div className="mt-4">
               <div className="flex items-center justify-between mb-8">
-                <h3 className="text-2xl font-bold text-white">Enrolled Courses</h3>
-                <Link href="/dashboard" className="text-[10px] font-bold text-white/40 tracking-[0.2em] uppercase hover:text-white cursor-pointer transition-colors">View All</Link>
+                <h3 className="text-2xl font-bold text-text-primary">Enrolled Courses</h3>
+                <Link href="/dashboard" className="text-[10px] font-bold text-text-primary/40 tracking-[0.2em] uppercase hover:text-text-primary cursor-pointer transition-colors">View All</Link>
               </div>
 
               <div className="space-y-6">
                 {inProgressCourses.length > 0 ? inProgressCourses.map((course: any) => {
                   const p = (course.completedLessonsCount / course.totalLessons) * 100;
                   return (
-                    <Link key={course.id} href={`/courses/${course.id}/learn`} className="block">
-                      <div className="bg-[#141824] border border-white/5 rounded-2xl overflow-hidden hover:border-white/10 transition-colors flex flex-col md:flex-row group h-auto md:h-48 cursor-pointer">
-                        <div className="w-full md:w-64 h-48 md:h-full relative overflow-hidden flex-shrink-0 border-r border-white/5 bg-[#0F172A]">
+                    <Link key={course.id} href={`/courses/${course.id}`} className="block">
+                      <div className="bg-surface border border-border/50 rounded-2xl overflow-hidden hover:border-border transition-colors flex flex-col md:flex-row group h-auto md:h-48 cursor-pointer">
+                        <div className="w-full md:w-64 h-48 md:h-full relative overflow-hidden flex-shrink-0 border-r border-border/50 bg-surface-light">
                           {course.image && <img src={course.image} alt={course.title} className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500" />}
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#141824]/60"></div>
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-surface/60"></div>
                         </div>
                         <div className="p-8 flex-1 flex flex-col justify-center relative">
-                           <div className="absolute top-6 right-8 rounded-full bg-white/5 border border-white/10 px-3 py-1 flex items-center justify-center">
-                              <span className="text-[9px] font-bold text-white/60 tracking-widest uppercase">{course.level}</span>
+                           <div className="absolute top-6 right-8 rounded-full bg-text-primary/5 border border-border px-3 py-1 flex items-center justify-center">
+                              <span className="text-[9px] font-bold text-text-primary/60 tracking-widest uppercase">{course.level}</span>
                            </div>
-                           <h4 className="text-xl font-bold text-white mb-2 pr-20">{course.title}</h4>
-                           <p className="text-sm text-white/40 mb-8 max-w-xl line-clamp-2">{course.description || "Mastering advanced patterns and implementations inside the modern ecosystem."}</p>
+                           <h4 className="text-xl font-bold text-text-primary mb-2 pr-20">{course.title}</h4>
+                           <p className="text-sm text-text-primary/40 mb-8 max-w-xl line-clamp-2">{course.description || "Mastering advanced patterns and implementations inside the modern ecosystem."}</p>
                            
                            <div className="mt-auto w-full">
                               <div className="flex justify-between items-end mb-3">
-                                <span className="text-[10px] font-bold text-white/30 tracking-widest uppercase">{course.completedLessonsCount} / {course.totalLessons} Lessons Completed</span>
+                                <span className="text-[10px] font-bold text-text-primary/30 tracking-widest uppercase">{course.completedLessonsCount} / {course.totalLessons} Lessons Completed</span>
                                 <span className="text-[10px] font-bold text-[#5A4AF4] tracking-widest uppercase">EST. {course.remainingTime} LEFT</span>
                               </div>
-                              <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                              <div className="w-full h-1.5 bg-text-primary/5 rounded-full overflow-hidden">
                                 <div className="h-full bg-[#5A4AF4] rounded-full transition-all duration-1000 ease-out" style={{width: `${p}%`}}></div>
                               </div>
                            </div>
@@ -337,10 +357,10 @@ export default async function LearningPathPage() {
                     </Link>
                   )
                 }) : (
-                  <div className="text-center py-16 bg-[#141824] border border-white/5 rounded-2xl">
-                     <BookOpen className="w-8 h-8 text-white/20 mx-auto mb-4" />
-                     <p className="text-white/50 text-sm font-semibold mb-1">No active courses</p>
-                     <p className="text-white/30 text-xs">Enroll in a course to see your progress here.</p>
+                  <div className="text-center py-16 bg-surface border border-border/50 rounded-2xl">
+                     <BookOpen className="w-8 h-8 text-text-primary/20 mx-auto mb-4" />
+                     <p className="text-text-primary/50 text-sm font-semibold mb-1">No active courses</p>
+                     <p className="text-text-primary/30 text-xs">Enroll in a course to see your progress here.</p>
                   </div>
                 )}
               </div>
@@ -352,10 +372,10 @@ export default async function LearningPathPage() {
           <div className="w-full xl:w-80 shrink-0 flex flex-col gap-8">
             
             {/* Weekly Objective */}
-            <div className="bg-[#141824] border border-white/5 rounded-2xl p-8 flex flex-col items-center text-center shadow-xl relative overflow-hidden">
+            <div className="bg-surface border border-border/50 rounded-2xl p-8 flex flex-col items-center text-center shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#5A4AF4]/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
               
-              <h4 className="text-[11px] font-bold text-white/40 tracking-[0.2em] uppercase mb-10 w-full text-left">Weekly Objective</h4>
+              <h4 className="text-[11px] font-bold text-text-primary/40 tracking-[0.2em] uppercase mb-10 w-full text-left">Weekly Objective</h4>
               
               <div className="relative w-40 h-40 flex items-center justify-center mb-8">
                 {/* SVG Radial Progress */}
@@ -364,15 +384,15 @@ export default async function LearningPathPage() {
                   <circle cx="80" cy="80" r="70" fill="transparent" stroke="#5A4AF4" strokeWidth="12" strokeDasharray="439.8" strokeDashoffset={439.8 - (439.8 * (weeklyPercent / 100))} strokeLinecap="round" className="drop-shadow-[0_0_8px_rgba(90,74,244,0.6)] transition-all duration-1000" />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-3xl font-extrabold text-white">{weeklyPercent}%</span>
+                  <span className="text-3xl font-extrabold text-text-primary">{weeklyPercent}%</span>
                 </div>
               </div>
 
-              <h5 className="text-lg font-bold text-white mb-2">{weeklyCompleted} of {weeklyGoal} lessons<br/>completed</h5>
-              <p className="text-xs text-white/40 leading-relaxed mb-6">Maintain your momentum to unlock the &apos;Consistency&apos; badge this week.</p>
+              <h5 className="text-lg font-bold text-text-primary mb-2">{weeklyCompleted} of {weeklyGoal} lessons<br/>completed</h5>
+              <p className="text-xs text-text-primary/40 leading-relaxed mb-6">Maintain your momentum to unlock the &apos;Consistency&apos; badge this week.</p>
               
               <Link href="/dashboard" className="w-full">
-                <Button className="w-full bg-white/5 hover:bg-white/10 text-white font-bold tracking-widest text-[10px] uppercase py-6 border border-white/10 transition-colors">
+                <Button className="w-full bg-text-primary/5 hover:bg-text-primary/10 text-text-primary font-bold tracking-widest text-[10px] uppercase py-6 border border-border transition-colors">
                   VIEW DASHBOARD
                 </Button>
               </Link>
@@ -380,9 +400,9 @@ export default async function LearningPathPage() {
 
             {/* Achievements (synced with real data) */}
             <div>
-              <h4 className="text-[11px] font-bold text-white/40 tracking-[0.2em] uppercase mb-6 px-1">Achievements</h4>
+              <h4 className="text-[11px] font-bold text-text-primary/40 tracking-[0.2em] uppercase mb-6 px-1">Achievements</h4>
               
-              <div className="bg-[#141824] border border-white/5 rounded-2xl p-6 flex flex-col gap-6 shadow-xl">
+              <div className="bg-surface border border-border/50 rounded-2xl p-6 flex flex-col gap-6 shadow-xl">
                 
                 {unlockedAchievements.length > 0 ? (
                   <>
@@ -392,22 +412,22 @@ export default async function LearningPathPage() {
                           {a.icon}
                         </div>
                         <div className="flex flex-col">
-                          <span className={`font-bold text-sm text-white group-hover:${a.color} transition-colors`}>{a.title}</span>
-                          <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest mt-1">Unlocked</span>
+                          <span className={`font-bold text-sm text-text-primary group-hover:${a.color} transition-colors`}>{a.title}</span>
+                          <span className="text-[9px] font-bold text-text-primary/30 uppercase tracking-widest mt-1">Unlocked</span>
                         </div>
                       </div>
                     ))}
                   </>
                 ) : (
                   <div className="text-center py-6">
-                    <Trophy className="w-6 h-6 text-white/20 mx-auto mb-3" />
-                    <p className="text-xs text-white/40">No achievements unlocked yet.</p>
-                    <p className="text-[10px] text-white/25 mt-1">Start learning to earn badges.</p>
+                    <Trophy className="w-6 h-6 text-text-primary/20 mx-auto mb-3" />
+                    <p className="text-xs text-text-primary/40">No achievements unlocked yet.</p>
+                    <p className="text-[10px] text-text-primary/25 mt-1">Start learning to earn badges.</p>
                   </div>
                 )}
 
-                <div className="w-full border-t border-white/5 pt-6 mt-2">
-                  <Link href="/achievements" className="block text-center text-[10px] font-bold text-white/30 tracking-[0.2em] uppercase hover:text-white cursor-pointer transition-colors">
+                <div className="w-full border-t border-border/50 pt-6 mt-2">
+                  <Link href="/achievements" className="block text-center text-[10px] font-bold text-text-primary/30 tracking-[0.2em] uppercase hover:text-text-primary cursor-pointer transition-colors">
                     See All {totalAchievements} Badges ({unlockedAchievements.length} unlocked)
                   </Link>
                 </div>

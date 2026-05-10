@@ -15,24 +15,24 @@ export const Footer = () => {
             </p>
           </div>
           <div>
-            <h4 className="text-xs font-bold tracking-widest text-white mb-6 uppercase">Platform</h4>
+            <h4 className="text-xs font-bold tracking-widest text-text-primary mb-6 uppercase">Platform</h4>
             <ul className="space-y-4">
-              <li><Link href="/courses" className="text-xs font-semibold text-text-primary/60 hover:text-white uppercase tracking-widest transition-colors">Courses</Link></li>
-              <li><Link href="/learning-path" className="text-xs font-semibold text-text-primary/60 hover:text-white uppercase tracking-widest transition-colors">Learning Paths</Link></li>
+              <li><Link href="/courses" className="text-xs font-semibold text-text-primary/60 hover:text-text-primary uppercase tracking-widest transition-colors">Courses</Link></li>
+              <li><Link href="/learning-path" className="text-xs font-semibold text-text-primary/60 hover:text-text-primary uppercase tracking-widest transition-colors">Learning Paths</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-xs font-bold tracking-widest text-white mb-6 uppercase">Company</h4>
+            <h4 className="text-xs font-bold tracking-widest text-text-primary mb-6 uppercase">Company</h4>
             <ul className="space-y-4">
-              <li><Link href="/about" className="text-xs font-semibold text-text-primary/60 hover:text-white uppercase tracking-widest transition-colors">About Us</Link></li>
-              <li><Link href="/contact" className="text-xs font-semibold text-text-primary/60 hover:text-white uppercase tracking-widest transition-colors">Contact</Link></li>
+              <li><Link href="/about" className="text-xs font-semibold text-text-primary/60 hover:text-text-primary uppercase tracking-widest transition-colors">About Us</Link></li>
+              <li><Link href="/contact" className="text-xs font-semibold text-text-primary/60 hover:text-text-primary uppercase tracking-widest transition-colors">Contact</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-xs font-bold tracking-widest text-white mb-6 uppercase">Legal</h4>
+            <h4 className="text-xs font-bold tracking-widest text-text-primary mb-6 uppercase">Legal</h4>
             <ul className="space-y-4">
-              <li><Link href="/privacy" className="text-xs font-semibold text-text-primary/60 hover:text-white uppercase tracking-widest transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="text-xs font-semibold text-text-primary/60 hover:text-white uppercase tracking-widest transition-colors">Terms of Service</Link></li>
+              <li><Link href="/privacy" className="text-xs font-semibold text-text-primary/60 hover:text-text-primary uppercase tracking-widest transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="text-xs font-semibold text-text-primary/60 hover:text-text-primary uppercase tracking-widest transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
         </div>

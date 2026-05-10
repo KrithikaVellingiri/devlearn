@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
 import { toast } from "sonner";
+import { formatPrice } from "@/lib/formatters";
 
 interface CourseCardProps {
   id?: string;
@@ -14,7 +15,7 @@ interface CourseCardProps {
   instructor: string;
   rating: number;
   reviews: number;
-  price: string;
+  price: string | number;
   imageUrl: string;
   enrolled?: boolean;
   totalLessons?: number;
@@ -39,7 +40,8 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   const safeCategory = category || "General";
   const safeRating = rating ?? 0;
   const safeReviews = reviews ?? 0;
-  const safePrice = price || "$0.00";
+  const numericPrice = typeof price === 'string' ? (parseFloat(price.replace(/[^0-9.]/g, "")) || 0) : (price || 0);
+  const formattedPrice = numericPrice > 0 ? formatPrice(numericPrice) : "Free";
   const safeImage = imageUrl || "/placeholder.jpg";
 
   const itemId = id || safeTitle.replace(/\s+/g, '-').toLowerCase();
@@ -49,10 +51,15 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     
-    const numericPrice = Number(safePrice.replace(/[^0-9.]/g, "")) || 0;
-    
     const items = useCartStore.getState().items;
     const isAlreadyInCart = items.some(i => i.id === itemId);
+
+    if (enrolled) {
+      toast("Already enrolled", {
+        description: "You already own this course.",
+      });
+      return;
+    }
 
     if (isAlreadyInCart) {
       toast("Already in cart", {
@@ -106,7 +113,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
         </div>
         
         <div className="flex items-center justify-between mt-auto pt-2 border-t border-border">
-          <span className="font-bold text-lg">{safePrice}</span>
+          <span className="font-bold text-lg">{formattedPrice}</span>
           <Button variant="ghost" size="icon" aria-label="Add to cart" onClick={handleAddToCart}>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="9" cy="21" r="1"></circle>

@@ -14,7 +14,7 @@ export const StatsBanner = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 divide-x-0 lg:divide-x divide-border">
           {stats.map((stat, idx) => (
             <div key={idx} className="flex flex-col items-center justify-center text-center px-4">
-              <p className="text-3xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">{stat.value}</p>
+              <p className="text-3xl md:text-5xl font-extrabold text-text-primary mb-3 tracking-tight">{stat.value}</p>
               <p className="text-xs font-bold tracking-[0.2em] text-text-primary/60 uppercase">{stat.label}</p>
             </div>
           ))}

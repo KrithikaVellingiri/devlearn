@@ -83,7 +83,7 @@ export default async function OverviewPage() {
                 {continueCourse.image && <div className="w-full md:w-64 h-48 md:h-auto relative overflow-hidden bg-background shrink-0"><img src={continueCourse.image} alt={continueCourse.title} className="absolute inset-0 w-full h-full object-cover opacity-70" /><div className="absolute inset-0 bg-gradient-to-r from-transparent to-surface/80"></div></div>}
                 <CardContent className="p-6 flex flex-col justify-center flex-1">
                   <Badge className="bg-primary/10 text-primary border-none px-2 py-0.5 text-[10px] font-bold tracking-wider w-fit mb-3">{continueCourse.category}</Badge>
-                  <h3 className="text-xl font-bold text-white mb-2">{continueCourse.title}</h3>
+                  <h3 className="text-xl font-bold text-text-primary mb-2">{continueCourse.title}</h3>
                   <div className="flex items-center gap-4 text-sm text-text-primary/60 mb-4"><span>{continueCourse.cc} / {continueCourse.tl} lessons</span><span className="text-cyan-400 font-bold">{continueCourse.pct}%</span></div>
                   <div className="w-full bg-surface/50 rounded-full h-1.5 overflow-hidden border border-border/50 mb-5"><div className="bg-cyan-400 h-1.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${continueCourse.pct}%` }}></div></div>
                   <Link href={`/courses/${continueCourse.id}/learn`}><Button variant="primary" className="shadow-md border-transparent">Continue Learning <Play className="w-3 h-3 ml-2 fill-current" /></Button></Link>
@@ -104,7 +104,7 @@ export default async function OverviewPage() {
                   <CardContent className="p-4 flex items-center gap-4">
                     <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center shrink-0"><CheckCircle className="w-5 h-5 text-success" /></div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">Completed a lesson in <Link href={`/courses/${item.courseId}`} className="text-primary hover:underline">{item.courseTitle}</Link></p>
+                      <p className="text-sm font-semibold text-text-primary truncate">Completed a lesson in <Link href={`/courses/${item.courseId}`} className="text-primary hover:underline">{item.courseTitle}</Link></p>
                       <p className="text-xs text-text-primary/50 mt-0.5">{item.completedAt}</p>
                     </div>
                   </CardContent>

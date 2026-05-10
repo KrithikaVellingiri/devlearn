@@ -47,7 +47,7 @@ export const WhyDevLearnSection = () => {
         <span className="text-[10px] font-bold tracking-[0.2em] text-primary uppercase">
           Built for developers
         </span>
-        <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight mt-3 mb-4">
+        <h2 className="text-3xl md:text-5xl font-extrabold text-text-primary tracking-tight mt-3 mb-4">
           Why DevLearn?
         </h2>
         <p className="text-text-primary/60 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
@@ -68,7 +68,7 @@ export const WhyDevLearnSection = () => {
               >
                 <Icon className={`w-6 h-6 ${feature.color}`} />
               </div>
-              <h3 className="text-base font-bold text-white mb-3 tracking-tight">
+              <h3 className="text-base font-bold text-text-primary mb-3 tracking-tight">
                 {feature.title}
               </h3>
               <p className="text-sm text-text-primary/60 leading-relaxed">

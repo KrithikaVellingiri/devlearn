@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/sections/footer";
+
 import { CartClient } from "./cart-client";
 
 export default function CartPage() {
@@ -9,7 +9,7 @@ export default function CartPage() {
       <main className="flex-grow">
         <CartClient />
       </main>
-      <Footer />
+
     </div>
   );
 }

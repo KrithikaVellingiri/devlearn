@@ -6,15 +6,15 @@
 
 @theme {
   /* ── Colors ─────────────────────────────────────────────── */
-  --color-primary:        #4F46E5;
-  --color-primary-dark:   #3730A3;
-  --color-accent:         #06B6D4;
-  --color-background:     #0A0D14;
-  --color-surface:        #141824;
-  --color-surface-light:  #1A1E2E;
-  --color-text-primary:   #F1F5F9;
+  --color-primary:        #6366F1;
+  --color-primary-dark:   #4F46E5;
+  --color-accent:         #38BDF8;
+  --color-background:     #020617;
+  --color-surface:        #0F172A;
+  --color-surface-light:  #1E293B;
+  --color-text-primary:   #F8FAFC;
   --color-text-secondary: #94A3B8;
-  --color-border:         #334155;
+  --color-border:         #1E293B;
   --color-success:        #10B981;
   --color-warning:        #F59E0B;
   --color-danger:         #EF4444;
@@ -40,8 +40,8 @@
   --shadow-elevated: 0 10px 40px rgba(0, 0, 0, 0.5);
 
   /* ── Typography ─────────────────────────────────────────── */
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, "Cascadia Code", monospace;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
 }
 
 /* ============================================================
@@ -49,15 +49,15 @@
    ============================================================ */
 :root {
   /* Colors */
-  --dl-primary:        #4F46E5;
-  --dl-primary-dark:   #3730A3;
-  --dl-accent:         #06B6D4;
-  --dl-background:     #0A0D14;
-  --dl-surface:        #141824;
-  --dl-surface-light:  #1A1E2E;
-  --dl-text-primary:   #F1F5F9;
+  --dl-primary:        #6366F1;
+  --dl-primary-dark:   #4F46E5;
+  --dl-accent:         #38BDF8;
+  --dl-background:     #020617;
+  --dl-surface:        #0F172A;
+  --dl-surface-light:  #1E293B;
+  --dl-text-primary:   #F8FAFC;
   --dl-text-secondary: #94A3B8;
-  --dl-border:         #334155;
+  --dl-border:         #1E293B;
   --dl-success:        #10B981;
   --dl-warning:        #F59E0B;
   --dl-danger:         #EF4444;
@@ -91,8 +91,8 @@ html {
 }
 
 body {
-  background-color: #0A0D14;
-  color: #F1F5F9;
+  background-color: #020617;
+  color: #F8FAFC;
 
   /* Premium font rendering */
   -webkit-font-smoothing:  antialiased;
@@ -106,3 +106,32 @@ body {
 *::after {
   box-sizing: border-box;
 }
+
+/* ============================================================
+   LIGHT MODE OVERRIDES
+   ============================================================ */
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #F8FAFC;
+  color: #1E293B;
+}
+
+html.light {
+  --color-background:     #F8FAFC;
+  --color-surface:        #FFFFFF;
+  --color-surface-light:  #F1F5F9;
+  --color-text-primary:   #1E293B;
+  --color-text-secondary: #64748B;
+  --color-border:         #E2E8F0;
+
+  --dl-background:     #F8FAFC;
+  --dl-surface:        #FFFFFF;
+  --dl-surface-light:  #F1F5F9;
+  --dl-text-primary:   #1E293B;
+  --dl-text-secondary: #64748B;
+  --dl-border:         #E2E8F0;
+}
+
