@@ -176,14 +176,14 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
               <div className="flex items-center gap-1.5">
                 <Star className="w-4 h-4 fill-cyan-400 text-cyan-400" />
                 <span className="font-bold text-text-primary">{course.rating}</span>
-                <span className="text-text-primary/60">({course.reviewsCountLabel || `${course.reviewsCount} ratings`})</span>
+                <span className="text-text-secondary">({course.reviewsCountLabel || `${course.reviewsCount} ratings`})</span>
               </div>
               <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-text-primary/60" />
+                <User className="w-4 h-4 text-text-secondary" />
                 <span>{course.enrolled}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-text-primary/60" />
+                <Clock className="w-4 h-4 text-text-secondary" />
                 <span>{course.lastUpdated}</span>
               </div>
             </div>
@@ -215,7 +215,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                   <div className="w-full bg-surface/50 rounded-full h-2.5 overflow-hidden border border-border/50">
                     <div className="bg-cyan-400 h-2.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${progressPercent}%` }}></div>
                   </div>
-                  <p className="text-xs text-text-primary/60 mt-2 font-medium">
+                  <p className="text-xs text-text-secondary mt-2 font-medium">
                     {completedLessons.length} of {totalLessons} lessons completed
                   </p>
                 </div>
@@ -229,13 +229,13 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                       className="w-full flex items-center justify-between p-5 bg-surface/50 hover:bg-surface transition-colors cursor-pointer text-left"
                     >
                       <div className="flex items-center gap-4">
-                        <span className="text-sm font-bold text-text-primary/50 font-mono tracking-widest">{section.id}</span>
+                        <span className="text-sm font-bold text-text-secondary font-mono tracking-widest">{section.id}</span>
                         <span className="font-bold text-text-primary">{section.title}</span>
                       </div>
                       {openSections[section.id] ? (
-                        <ChevronUp className="w-5 h-5 text-text-primary/50" />
+                        <ChevronUp className="w-5 h-5 text-text-secondary" />
                       ) : (
-                        <ChevronDown className="w-5 h-5 text-text-primary/50" />
+                        <ChevronDown className="w-5 h-5 text-text-secondary" />
                       )}
                     </button>
 
@@ -250,16 +250,16 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                                 {isCompleted ? (
                                   <CheckCircle2 className="w-4 h-4 text-cyan-400" />
                                 ) : lesson.type === 'video' ? (
-                                  <PlayCircle className="w-4 h-4 text-text-primary/60 group-hover:text-primary transition-colors" />
+                                  <PlayCircle className="w-4 h-4 text-text-secondary group-hover:text-primary transition-colors" />
                                 ) : (
-                                  <FileText className="w-4 h-4 text-text-primary/60 group-hover:text-primary transition-colors" />
+                                  <FileText className="w-4 h-4 text-text-secondary group-hover:text-primary transition-colors" />
                                 )}
-                                <span className={`text-sm ${isCompleted ? 'text-text-primary/50 line-through' : 'text-text-primary/90'}`}>
+                                <span className={`text-sm ${isCompleted ? 'text-text-secondary line-through' : 'text-text-primary/90'}`}>
                                   {lesson.title}
                                 </span>
                               </div>
                               <div className="flex items-center gap-4">
-                                <span className="text-xs font-mono text-text-primary/50">{lesson.duration}</span>
+                                <span className="text-xs font-mono text-text-secondary">{lesson.duration}</span>
                               </div>
                             </div>
                           );
@@ -301,7 +301,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                     {course.instructor.bio}
                   </p>
                   )}
-                  <div className="flex items-center gap-6 text-xs text-text-primary/50 font-bold tracking-wider">
+                  <div className="flex items-center gap-6 text-xs text-text-secondary font-bold tracking-wider">
                     {course.instructor?.students && (
                     <span className="flex items-center gap-2">
                       <User className="w-3.5 h-3.5" />
@@ -339,12 +339,12 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                         </div>
                         <div>
                           <h4 className="text-sm font-bold text-text-primary">{review.name}</h4>
-                          <p className="text-[10px] text-text-primary/50">{review.role}</p>
+                          <p className="text-[10px] text-text-secondary">{review.role}</p>
                         </div>
                       </div>
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-3 h-3 fill-text-primary/40 text-text-primary/40" />
+                          <Star key={i} className="w-3 h-3 fill-text-primary/40 text-text-secondary" />
                         ))}
                       </div>
                     </div>
@@ -369,7 +369,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                   <img
                     src={course.image || "/placeholder.jpg"}
                     alt={course.title || "Course"}
-                    className="w-full h-full object-cover opacity-60"
+                    className="w-full h-full object-cover text-text-secondary"
                     onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.jpg'; }}
                   />
                   <div className="absolute inset-0 z-20 flex items-center justify-center">
@@ -384,7 +384,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                   <div className="flex items-center gap-4 mb-6">
                     <span className="text-3xl font-extrabold text-text-primary">{formatPrice(course.numericPrice || course.price || 0)}</span>
                     {course.originalPrice != null && (
-                    <span className="text-text-primary/40 line-through text-sm font-medium pr-2">
+                    <span className="text-text-secondary line-through text-sm font-medium pr-2">
                       {formatPrice(course.originalPrice)}
                     </span>
                     )}
@@ -457,7 +457,7 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                     )}
                   </div>
 
-                  <p className="text-[10px] text-center text-text-primary/50 tracking-widest uppercase font-bold mb-8">
+                  <p className="text-[10px] text-center text-text-secondary tracking-widest uppercase font-bold mb-8">
                     30-Day Money-Back Guarantee
                   </p>
 
@@ -470,11 +470,11 @@ export const CourseDetailClient = ({ course, relatedCourses, userEmail }: { cour
                     <ul className="space-y-3">
                       {course.includes?.map((item, idx) => (
                         <li key={idx} className="flex items-center gap-3 text-sm text-text-primary/80">
-                          {item.iconName === 'video' && <MonitorPlay className="w-4 h-4 text-text-primary/70" />}
-                          {item.iconName === 'paper' && <File className="w-4 h-4 text-text-primary/70" />}
-                          {item.iconName === 'infinity' && <InfinityIcon className="w-4 h-4 text-text-primary/70" />}
-                          {item.iconName === 'terminal' && <TerminalIcon className="w-4 h-4 text-text-primary/70" />}
-                          {item.iconName === 'award' && <Award className="w-4 h-4 text-text-primary/70" />}
+                          {item.iconName === 'video' && <MonitorPlay className="w-4 h-4 text-text-secondary" />}
+                          {item.iconName === 'paper' && <File className="w-4 h-4 text-text-secondary" />}
+                          {item.iconName === 'infinity' && <InfinityIcon className="w-4 h-4 text-text-secondary" />}
+                          {item.iconName === 'terminal' && <TerminalIcon className="w-4 h-4 text-text-secondary" />}
+                          {item.iconName === 'award' && <Award className="w-4 h-4 text-text-secondary" />}
                           <span>{item.text}</span>
                         </li>
                       ))}

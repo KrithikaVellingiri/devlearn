@@ -40,7 +40,7 @@ export function SettingsClient({ initialName, email }: SettingsClientProps) {
 
           <div className="space-y-4">
             <div>
-              <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-primary/50 mb-2 block">
+              <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-secondary mb-2 block">
                 Display Name
               </label>
               <Input
@@ -52,15 +52,15 @@ export function SettingsClient({ initialName, email }: SettingsClientProps) {
             </div>
 
             <div>
-              <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-primary/50 mb-2 block">
+              <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-secondary mb-2 block">
                 Email Address
               </label>
               <div className="flex items-center gap-3">
-                <div className="flex-1 h-11 bg-surface/20 border border-border/40 rounded-md px-3 flex items-center text-sm text-text-primary/60">
-                  <Mail className="w-4 h-4 mr-2 text-text-primary/40 shrink-0" />
+                <div className="flex-1 h-11 bg-surface/20 border border-border/40 rounded-md px-3 flex items-center text-sm text-text-secondary">
+                  <Mail className="w-4 h-4 mr-2 text-text-secondary shrink-0" />
                   <span className="truncate">{email}</span>
                 </div>
-                <span className="text-[9px] font-bold text-text-primary/40 tracking-wider uppercase whitespace-nowrap">
+                <span className="text-[9px] font-bold text-text-secondary tracking-wider uppercase whitespace-nowrap">
                   Read-only
                 </span>
               </div>
@@ -72,15 +72,17 @@ export function SettingsClient({ initialName, email }: SettingsClientProps) {
       {/* Preferences Section */}
       <Card className="bg-surface/50 border-border/50">
         <CardContent className="p-6 space-y-5">
-          <h2 className="text-base font-bold text-text-primary flex items-center gap-2">
-            {isDark ? <Moon className="w-4 h-4 text-primary" /> : <Sun className="w-4 h-4 text-yellow-400" />} Preferences
+          <h2 className="text-base font-bold text-text-primary">
+            Preferences
           </h2>
 
           {/* Theme Toggle */}
           <div className="flex items-center justify-between py-1">
             <div>
-              <p className="text-sm font-semibold text-text-primary">Theme</p>
-              <p className="text-xs text-text-primary/50 mt-0.5">
+              <p className="text-sm font-semibold text-text-primary flex items-center gap-2">
+                {isDark ? <Moon className="w-4 h-4 text-primary" /> : <Sun className="w-4 h-4 text-yellow-400" />} Theme
+              </p>
+              <p className="text-xs text-text-secondary mt-0.5">
                 {isDark ? "Dark mode active" : "Light mode active"}
               </p>
             </div>
@@ -113,11 +115,11 @@ export function SettingsClient({ initialName, email }: SettingsClientProps) {
               {notifications ? (
                 <Bell className="w-4 h-4 text-success" />
               ) : (
-                <BellOff className="w-4 h-4 text-text-primary/40" />
+                <BellOff className="w-4 h-4 text-text-secondary" />
               )}
               <div>
                 <p className="text-sm font-semibold text-text-primary">Notifications</p>
-                <p className="text-xs text-text-primary/50 mt-0.5">Learning reminders and updates</p>
+                <p className="text-xs text-text-secondary mt-0.5">Learning reminders and updates</p>
               </div>
             </div>
             <button

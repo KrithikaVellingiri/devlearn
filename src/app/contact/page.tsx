@@ -9,7 +9,7 @@ export default function ContactPage() {
       <main className="flex-grow container mx-auto px-4 py-20 md:py-28 max-w-3xl">
         <span className="text-[10px] font-bold tracking-[0.2em] text-primary uppercase">Get in Touch</span>
         <h1 className="text-4xl md:text-5xl font-extrabold text-text-primary mb-4 mt-3 tracking-tight">Contact</h1>
-        <p className="text-text-primary/60 text-base mb-12 max-w-xl leading-relaxed">
+        <p className="text-text-secondary text-base mb-12 max-w-xl leading-relaxed">
           Have a question, found a bug, or want to share feedback? Reach out through any of the channels below.
         </p>
 
@@ -20,7 +20,7 @@ export default function ContactPage() {
             </div>
             <div>
               <h3 className="font-bold text-text-primary text-sm mb-1">Email</h3>
-              <p className="text-xs text-text-primary/60">krithikavellingirii@gmail.com</p>
+              <p className="text-xs text-text-secondary">krithikavellingirii@gmail.com</p>
             </div>
           </a>
 
@@ -30,7 +30,7 @@ export default function ContactPage() {
             </div>
             <div>
               <h3 className="font-bold text-text-primary text-sm mb-1">GitHub</h3>
-              <p className="text-xs text-text-primary/60">View the source code</p>
+              <p className="text-xs text-text-secondary">View the source code</p>
             </div>
           </a>
 
@@ -40,7 +40,7 @@ export default function ContactPage() {
             </div>
             <div>
               <h3 className="font-bold text-text-primary text-sm mb-1">LinkedIn</h3>
-              <p className="text-xs text-text-primary/60">Connect professionally</p>
+              <p className="text-xs text-text-secondary">Connect professionally</p>
             </div>
           </a>
         </div>

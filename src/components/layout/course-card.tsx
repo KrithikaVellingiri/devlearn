@@ -81,21 +81,21 @@ export const CourseCard: React.FC<CourseCardProps> = ({
 
   return (
     <Link href={destination} className="block h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl">
-      <Card className="group h-full overflow-hidden flex flex-col hover:border-primary/50 transition-colors">
-        <div className="relative aspect-video w-full overflow-hidden bg-background">
+      <Card className="bg-surface border-border/50 shadow-none group h-full overflow-hidden flex flex-col hover:border-primary/50 hover:bg-surface-light transition-colors">
+        <div className="relative aspect-video w-full overflow-hidden bg-slate-900">
         <div className="absolute top-3 left-3 z-10">
           <Badge variant="default">{safeCategory}</Badge>
         </div>
         {safeImage ? (
-          <img 
-            src={safeImage} 
-            alt={safeTitle} 
-            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
-            onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.jpg'; }}
-          />
+            <img 
+              src={safeImage} 
+              alt={safeTitle} 
+              className="object-cover w-full h-full group-hover:scale-105 transition-all duration-500"
+              onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.jpg'; }}
+            />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary/20 via-surface to-background flex items-center justify-center">
-            <span className="text-text-primary/30 text-sm font-bold tracking-widest uppercase">No Image</span>
+            <span className="text-text-secondary text-sm font-bold tracking-widest uppercase">No Image</span>
           </div>
         )}
       </div>
@@ -103,13 +103,13 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       <CardContent className="flex flex-col flex-grow p-5 space-y-4">
         <div>
           <h3 className="font-semibold text-lg line-clamp-2 leading-tight">{safeTitle}</h3>
-          <p className="text-sm text-text-primary/70 mt-1">By {safeInstructor}</p>
+          <p className="text-sm text-text-secondary mt-1">By {safeInstructor}</p>
         </div>
         
         <div className="flex items-center space-x-1.5 text-sm">
           <span className="text-yellow-500">★</span>
           <span className="font-medium">{safeRating}</span>
-          <span className="text-text-primary/50">({safeReviews})</span>
+          <span className="text-text-secondary">({safeReviews})</span>
         </div>
         
         <div className="flex items-center justify-between mt-auto pt-2 border-t border-border">

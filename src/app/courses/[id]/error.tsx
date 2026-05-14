@@ -22,7 +22,7 @@ export default function CourseDetailError({
           <AlertCircle className="w-8 h-8 text-red-400" />
         </div>
         <h2 className="text-2xl font-extrabold text-text-primary mb-2 tracking-tight">Failed to load content</h2>
-        <p className="text-text-primary/60 mb-8 leading-relaxed">
+        <p className="text-text-secondary mb-8 leading-relaxed">
           Something went wrong while trying to access this course. Please try again.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">

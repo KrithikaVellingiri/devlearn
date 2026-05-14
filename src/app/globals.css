@@ -6,26 +6,26 @@
 
 @theme {
   /* ── Colors ─────────────────────────────────────────────── */
-  --color-primary:        #6366F1;
-  --color-primary-dark:   #4F46E5;
-  --color-accent:         #38BDF8;
-  --color-background:     #020617;
-  --color-surface:        #0F172A;
-  --color-surface-light:  #1E293B;
-  --color-text-primary:   #F8FAFC;
+  --color-primary: #6366F1;
+  --color-primary-dark: #4F46E5;
+  --color-accent: #38BDF8;
+  --color-background: #020617;
+  --color-surface: #0F172A;
+  --color-surface-light: #1E293B;
+  --color-text-primary: #F8FAFC;
   --color-text-secondary: #94A3B8;
-  --color-border:         #1E293B;
-  --color-success:        #10B981;
-  --color-warning:        #F59E0B;
-  --color-danger:         #EF4444;
+  --color-border: #1E293B;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
 
   /* ── Spacing (8pt grid) ─────────────────────────────────── */
-  --spacing-1:  4px;
-  --spacing-2:  8px;
-  --spacing-3:  12px;
-  --spacing-4:  16px;
-  --spacing-6:  24px;
-  --spacing-8:  32px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
   --spacing-12: 48px;
   --spacing-16: 64px;
 
@@ -36,7 +36,7 @@
   --radius-xl: 24px;
 
   /* ── Shadows ────────────────────────────────────────────── */
-  --shadow-card:     0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-elevated: 0 10px 40px rgba(0, 0, 0, 0.5);
 
   /* ── Typography ─────────────────────────────────────────── */
@@ -49,26 +49,26 @@
    ============================================================ */
 :root {
   /* Colors */
-  --dl-primary:        #6366F1;
-  --dl-primary-dark:   #4F46E5;
-  --dl-accent:         #38BDF8;
-  --dl-background:     #020617;
-  --dl-surface:        #0F172A;
-  --dl-surface-light:  #1E293B;
-  --dl-text-primary:   #F8FAFC;
+  --dl-primary: #6366F1;
+  --dl-primary-dark: #4F46E5;
+  --dl-accent: #38BDF8;
+  --dl-background: #020617;
+  --dl-surface: #0F172A;
+  --dl-surface-light: #1E293B;
+  --dl-text-primary: #F8FAFC;
   --dl-text-secondary: #94A3B8;
-  --dl-border:         #1E293B;
-  --dl-success:        #10B981;
-  --dl-warning:        #F59E0B;
-  --dl-danger:         #EF4444;
+  --dl-border: #1E293B;
+  --dl-success: #10B981;
+  --dl-warning: #F59E0B;
+  --dl-danger: #EF4444;
 
   /* Spacing */
-  --dl-space-1:  4px;
-  --dl-space-2:  8px;
-  --dl-space-3:  12px;
-  --dl-space-4:  16px;
-  --dl-space-6:  24px;
-  --dl-space-8:  32px;
+  --dl-space-1: 4px;
+  --dl-space-2: 8px;
+  --dl-space-3: 12px;
+  --dl-space-4: 16px;
+  --dl-space-6: 24px;
+  --dl-space-8: 32px;
   --dl-space-12: 48px;
   --dl-space-16: 64px;
 
@@ -79,7 +79,7 @@
   --dl-radius-xl: 24px;
 
   /* Shadows */
-  --dl-shadow-card:     0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --dl-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
   --dl-shadow-elevated: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
@@ -95,7 +95,7 @@ body {
   color: #F8FAFC;
 
   /* Premium font rendering */
-  -webkit-font-smoothing:  antialiased;
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
@@ -120,18 +120,17 @@ html.light body {
 }
 
 html.light {
-  --color-background:     #F8FAFC;
-  --color-surface:        #FFFFFF;
-  --color-surface-light:  #F1F5F9;
-  --color-text-primary:   #1E293B;
-  --color-text-secondary: #64748B;
-  --color-border:         #E2E8F0;
+  --color-background: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-surface-light: #F1F5F9;
+  --color-text-primary: #1E293B;
+  --color-text-secondary: #475569;
+  --color-border: #E2E8F0;
 
-  --dl-background:     #F8FAFC;
-  --dl-surface:        #FFFFFF;
-  --dl-surface-light:  #F1F5F9;
-  --dl-text-primary:   #1E293B;
-  --dl-text-secondary: #64748B;
-  --dl-border:         #E2E8F0;
+  --dl-background: #F8FAFC;
+  --dl-surface: #FFFFFF;
+  --dl-surface-light: #F1F5F9;
+  --dl-text-primary: #1E293B;
+  --dl-text-secondary: #475569;
+  --dl-border: #E2E8F0;
 }
-

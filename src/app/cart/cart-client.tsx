@@ -81,7 +81,7 @@ export const CartClient = () => {
       <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="mb-10">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-text-primary mb-2">Shopping Cart</h1>
-          <p className="text-xs uppercase tracking-widest text-text-primary/60 font-semibold">
+          <p className="text-xs uppercase tracking-widest text-text-secondary font-semibold">
             Precision in selection • {items.length} item{items.length !== 1 ? "s" : ""}
           </p>
         </div>
@@ -89,11 +89,11 @@ export const CartClient = () => {
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 mb-12 bg-surface/20 rounded-2xl border border-border/50 text-center space-y-6">
             <div className="bg-surface p-6 rounded-full border border-border">
-               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-text-primary/50"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-text-secondary"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
             </div>
             <div>
               <h2 className="text-xl font-bold text-text-primary mb-2">Your cart is empty</h2>
-              <p className="text-text-primary/60">Looks like you haven't added any courses to your cart yet.</p>
+              <p className="text-text-secondary">Looks like you haven't added any courses to your cart yet.</p>
             </div>
             <Link href="/courses">
                <Button variant="primary" size="lg" className="px-8 mt-2">Explore courses</Button>
@@ -111,14 +111,14 @@ export const CartClient = () => {
                   <div className="flex flex-col flex-grow justify-between py-1">
                     <div>
                       <h3 className="font-semibold text-lg leading-snug text-text-primary">{item.title}</h3>
-                      <p className="text-sm text-text-primary/60 mt-1">Instructor: {item.instructor}</p>
+                      <p className="text-sm text-text-secondary mt-1">Instructor: {item.instructor}</p>
                     </div>
                     
                     <div className="flex items-center gap-6 mt-6 sm:mt-0">
                       <button 
                         onClick={() => removeFromCart(item.id)}
                         disabled={isCheckingOut}
-                        className="text-xs uppercase tracking-wider font-semibold text-text-primary/60 hover:text-red-400 flex items-center gap-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="text-xs uppercase tracking-wider font-semibold text-text-secondary hover:text-red-400 flex items-center gap-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                         Remove
@@ -129,7 +129,7 @@ export const CartClient = () => {
                   <div className="flex flex-col items-end py-1 sm:min-w-[100px]">
                     <p className="font-bold text-lg text-text-primary">{formatPrice(item.price)}</p>
                     {item.originalPrice && (
-                      <p className="text-[11px] text-text-primary/50 line-through mt-0.5">{formatPrice(item.originalPrice)}</p>
+                      <p className="text-[11px] text-text-secondary line-through mt-0.5">{formatPrice(item.originalPrice)}</p>
                     )}
                   </div>
                 </Card>
@@ -162,9 +162,9 @@ export const CartClient = () => {
                 </div>
                 
                 <div className="mb-6">
-                  <label className="block text-[10px] uppercase tracking-widest text-text-primary/60 font-semibold mb-3">Voucher Code</label>
+                  <label className="block text-[10px] uppercase tracking-widest text-text-secondary font-semibold mb-3">Voucher Code</label>
                   <div className="flex gap-3">
-                    <Input placeholder="ARCHITECT2024" className="bg-background/80 h-11 border-border shadow-inner font-mono text-sm uppercase placeholder:text-text-primary/30" />
+                    <Input placeholder="ARCHITECT2024" className="bg-background/80 h-11 border-border shadow-inner font-mono text-sm uppercase placeholder:text-text-secondary" />
                     <Button variant="secondary" className="h-11 px-6 font-bold text-xs tracking-wider text-text-primary">APPLY</Button>
                   </div>
                 </div>
@@ -199,7 +199,7 @@ export const CartClient = () => {
                   )}
                 </Button>
                 
-                <p className="mt-8 text-center text-[9px] uppercase tracking-[0.2em] text-text-primary/40 leading-loose font-bold max-w-[280px] mx-auto">
+                <p className="mt-8 text-center text-[9px] uppercase tracking-[0.2em] text-text-secondary leading-loose font-bold max-w-[280px] mx-auto">
                   Secure technical transaction encrypted with AES-256
                 </p>
               </Card>

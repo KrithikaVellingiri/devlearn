@@ -131,7 +131,7 @@ function LearnClientContent({ course, userEmail }: { course: Course; userEmail: 
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center text-text-primary">
         <Loader2 className="w-8 h-8 animate-spin text-cyan-400 mb-4" />
-        <p className="text-text-primary/60 font-medium">Loading course player...</p>
+        <p className="text-text-secondary font-medium">Loading course player...</p>
       </div>
     );
   }
@@ -139,7 +139,7 @@ function LearnClientContent({ course, userEmail }: { course: Course; userEmail: 
   if (flattenedCurriculum.length === 0) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center text-text-primary">
-        <p className="text-text-primary/60 font-medium mb-4">
+        <p className="text-text-secondary font-medium mb-4">
           No lessons found in this course.
         </p>
         <Button onClick={() => router.push(`/courses/${course.id}`)}>
@@ -207,7 +207,7 @@ function LearnClientContent({ course, userEmail }: { course: Course; userEmail: 
           </Link>
           <button
             onClick={() => setIsSidebarOpen(false)}
-            className="md:hidden p-1.5 text-text-primary/50 hover:text-text-primary rounded-md"
+            className="md:hidden p-1.5 text-text-secondary hover:text-text-primary rounded-md"
             aria-label="Close sidebar"
           >
             <X className="w-4 h-4" />
@@ -222,7 +222,7 @@ function LearnClientContent({ course, userEmail }: { course: Course; userEmail: 
           <h2 className="font-extrabold text-text-primary text-sm mb-3 leading-snug line-clamp-2">
             {course.title}
           </h2>
-          <div className="flex justify-between items-center text-xs font-bold text-text-primary/60 mb-1.5 tracking-wider uppercase">
+          <div className="flex justify-between items-center text-xs font-bold text-text-secondary mb-1.5 tracking-wider uppercase">
             <span>Progress</span>
             <span className="text-cyan-400">{progressPercent}%</span>
           </div>
@@ -246,7 +246,7 @@ function LearnClientContent({ course, userEmail }: { course: Course; userEmail: 
                 className="px-4 py-3"
                 style={{ backgroundColor: "var(--color-background, #020617)" }}
               >
-                <p className="text-[10px] font-bold text-text-primary/40 font-mono tracking-widest uppercase mb-0.5">
+                <p className="text-[10px] font-bold text-text-secondary font-mono tracking-widest uppercase mb-0.5">
                   {section.id}
                 </p>
                 <h3 className="font-bold text-text-primary/80 text-xs leading-snug">
@@ -286,11 +286,11 @@ function LearnClientContent({ course, userEmail }: { course: Course; userEmail: 
                           />
                         ) : fl.lesson.type === "video" ? (
                           <PlayCircle
-                            className={`w-4 h-4 ${isActive ? "text-primary" : "text-text-primary/40"}`}
+                            className={`w-4 h-4 ${isActive ? "text-primary" : "text-text-secondary"}`}
                           />
                         ) : (
                           <FileText
-                            className={`w-4 h-4 ${isActive ? "text-primary" : "text-text-primary/40"}`}
+                            className={`w-4 h-4 ${isActive ? "text-primary" : "text-text-secondary"}`}
                           />
                         )}
                       </div>
@@ -300,7 +300,7 @@ function LearnClientContent({ course, userEmail }: { course: Course; userEmail: 
                             isActive
                               ? "text-text-primary font-bold"
                               : fl.isCompleted
-                              ? "text-text-primary/50 font-medium"
+                              ? "text-text-secondary font-medium"
                               : "text-text-primary/75 font-medium"
                           }`}
                         >
@@ -337,14 +337,14 @@ function LearnClientContent({ course, userEmail }: { course: Course; userEmail: 
             {/* Sidebar toggle — always visible */}
             <button
               onClick={() => setIsSidebarOpen((p) => !p)}
-              className="p-1.5 text-text-primary/50 hover:text-text-primary rounded-md transition-colors shrink-0"
+              className="p-1.5 text-text-secondary hover:text-text-primary rounded-md transition-colors shrink-0"
               aria-label="Toggle lesson sidebar"
             >
               <Menu className="w-5 h-5" />
             </button>
 
             {activeLessonDetails && (
-              <span className="hidden sm:block text-xs font-bold text-text-primary/50 tracking-widest uppercase truncate">
+              <span className="hidden sm:block text-xs font-bold text-text-secondary tracking-widest uppercase truncate">
                 {activeLessonDetails.sectionTitle}&nbsp;/&nbsp;Lesson{" "}
                 {activeLessonDetails.lessonIndex + 1}
               </span>
@@ -355,7 +355,7 @@ function LearnClientContent({ course, userEmail }: { course: Course; userEmail: 
             {/* Home / back navigation — always accessible */}
             <Link
               href="/"
-              className="p-1.5 text-text-primary/50 hover:text-text-primary rounded-md transition-colors"
+              className="p-1.5 text-text-secondary hover:text-text-primary rounded-md transition-colors"
               title="Go to Home"
             >
               <Home className="w-4 h-4" />
@@ -404,7 +404,7 @@ function LearnClientContent({ course, userEmail }: { course: Course; userEmail: 
                   <h1 className="text-2xl md:text-3xl font-extrabold text-text-primary mb-4 leading-tight">
                     {activeLessonDetails.lesson.title}
                   </h1>
-                  <div className="flex items-center gap-4 text-sm font-bold tracking-wider text-text-primary/50 uppercase">
+                  <div className="flex items-center gap-4 text-sm font-bold tracking-wider text-text-secondary uppercase">
                     <span className="flex items-center gap-1.5">
                       {activeLessonDetails.lesson.type === "video" ? (
                         <>

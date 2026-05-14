@@ -23,7 +23,7 @@ export default function CourseError({
           <AlertCircle className="w-8 h-8 text-red-400" />
         </div>
         <h2 className="text-2xl font-extrabold text-text-primary mb-2 tracking-tight">Failed to load courses</h2>
-        <p className="text-text-primary/60 mb-8 leading-relaxed">
+        <p className="text-text-secondary mb-8 leading-relaxed">
           We encountered an unexpected error while loading the catalog. Please try again.
         </p>
         <div className="flex flex-col gap-4 justify-center">

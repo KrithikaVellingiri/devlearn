@@ -50,7 +50,7 @@ export const WhyDevLearnSection = () => {
         <h2 className="text-3xl md:text-5xl font-extrabold text-text-primary tracking-tight mt-3 mb-4">
           Why DevLearn?
         </h2>
-        <p className="text-text-primary/60 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+        <p className="text-text-secondary text-sm md:text-base max-w-xl mx-auto leading-relaxed">
           A learning platform designed around how developers actually learn — through practice, feedback, and structured progression.
         </p>
       </div>
@@ -71,7 +71,7 @@ export const WhyDevLearnSection = () => {
               <h3 className="text-base font-bold text-text-primary mb-3 tracking-tight">
                 {feature.title}
               </h3>
-              <p className="text-sm text-text-primary/60 leading-relaxed">
+              <p className="text-sm text-text-secondary leading-relaxed">
                 {feature.description}
               </p>
             </div>

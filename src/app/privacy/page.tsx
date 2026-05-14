@@ -9,7 +9,7 @@ export default function PrivacyPage() {
         <span className="text-[10px] font-bold tracking-[0.2em] text-primary uppercase">Legal</span>
         <h1 className="text-4xl md:text-5xl font-extrabold text-text-primary mb-8 mt-3 tracking-tight">Privacy Policy</h1>
         
-        <div className="space-y-8 text-text-primary/70 text-sm leading-relaxed">
+        <div className="space-y-8 text-text-secondary text-sm leading-relaxed">
           <section>
             <h2 className="text-lg font-bold text-text-primary mb-3">What We Collect</h2>
             <p>
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
             </p>
           </section>
 
-          <p className="text-text-primary/40 text-xs pt-4 border-t border-border/30">
+          <p className="text-text-secondary text-xs pt-4 border-t border-border/30">
             Last updated: May 2026
           </p>
         </div>

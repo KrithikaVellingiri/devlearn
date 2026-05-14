@@ -27,7 +27,7 @@ export default function GlobalError({
             <AlertCircle className="w-8 h-8 text-red-400" />
           </div>
           <h2 className="text-2xl font-extrabold text-text-primary mb-2 tracking-tight">Something went wrong</h2>
-          <p className="text-text-primary/60 mb-8 leading-relaxed">
+          <p className="text-text-secondary mb-8 leading-relaxed">
             We encountered an unexpected error. Please try again or return to the home page.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

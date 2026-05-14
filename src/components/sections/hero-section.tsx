@@ -10,7 +10,7 @@ export const HeroSection = () => {
           Master Your <br />
           <span className="text-primary leading-[1.1]">Future</span>
         </h1>
-        <p className="text-lg text-text-primary/70 max-w-lg leading-relaxed">
+        <p className="text-lg text-text-secondary max-w-lg leading-relaxed">
           Precision-engineered curriculum for the modern software architect. Deep dive into system design, cloud infrastructure, and advanced engineering patterns.
         </p>
         <div className="flex items-center gap-4 pt-4">
@@ -20,15 +20,15 @@ export const HeroSection = () => {
         </div>
         <div className="flex items-center gap-10 pt-8 border-t border-border mt-8">
           <div>
-            <p className="text-xs font-semibold text-text-primary/60 uppercase tracking-widest mb-1.5">Students</p>
+            <p className="text-xs font-semibold text-text-secondary uppercase tracking-widest mb-1.5">Students</p>
             <p className="text-xl font-bold text-primary">128.4K</p>
           </div>
           <div>
-            <p className="text-xs font-semibold text-text-primary/60 uppercase tracking-widest mb-1.5">Labs</p>
+            <p className="text-xs font-semibold text-text-secondary uppercase tracking-widest mb-1.5">Labs</p>
             <p className="text-xl font-bold text-primary">450+</p>
           </div>
           <div>
-            <p className="text-xs font-semibold text-text-primary/60 uppercase tracking-widest mb-1.5">Version</p>
+            <p className="text-xs font-semibold text-text-secondary uppercase tracking-widest mb-1.5">Version</p>
             <p className="text-xl font-bold text-primary">V2.4.0</p>
           </div>
         </div>

@@ -16,7 +16,7 @@ export default function SignInPage() {
               <span className="text-primary font-black">Dev</span>Learn
             </span>
           </Link>
-          <p className="text-xs text-text-primary/50 uppercase tracking-widest font-semibold mt-3">
+          <p className="text-xs text-text-secondary uppercase tracking-widest font-semibold mt-3">
             Sign in to continue
           </p>
         </div>
@@ -38,7 +38,7 @@ export default function SignInPage() {
 
           <div className="flex items-center gap-4 my-6">
             <div className="flex-1 h-px bg-border/50"></div>
-            <span className="text-[10px] font-bold text-text-primary/40 uppercase tracking-widest">or</span>
+            <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">or</span>
             <div className="flex-1 h-px bg-border/50"></div>
           </div>
 
@@ -55,26 +55,26 @@ export default function SignInPage() {
             className="space-y-4"
           >
             <div>
-              <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-primary/50 mb-2 block">
+              <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-secondary mb-2 block">
                 Email
               </label>
               <input
                 name="email"
                 type="email"
                 required
-                className="w-full h-11 bg-background border border-border/60 rounded-lg px-3 text-sm text-text-primary placeholder:text-text-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+                className="w-full h-11 bg-background border border-border/60 rounded-lg px-3 text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
                 placeholder="you@example.com"
               />
             </div>
             <div>
-              <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-primary/50 mb-2 block">
+              <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-secondary mb-2 block">
                 Password
               </label>
               <input
                 name="password"
                 type="password"
                 required
-                className="w-full h-11 bg-background border border-border/60 rounded-lg px-3 text-sm text-text-primary placeholder:text-text-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+                className="w-full h-11 bg-background border border-border/60 rounded-lg px-3 text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
                 placeholder="••••••••"
               />
             </div>
@@ -84,7 +84,7 @@ export default function SignInPage() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-text-primary/40 mt-6">
+        <p className="text-center text-xs text-text-secondary mt-6">
           <Link href="/" className="hover:text-text-primary transition-colors">← Back to DevLearn</Link>
         </p>
       </div>

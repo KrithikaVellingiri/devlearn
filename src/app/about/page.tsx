@@ -9,7 +9,7 @@ export default function AboutPage() {
         <span className="text-[10px] font-bold tracking-[0.2em] text-primary uppercase">Our Story</span>
         <h1 className="text-4xl md:text-5xl font-extrabold text-text-primary mb-8 mt-3 tracking-tight">About DevLearn</h1>
         
-        <div className="space-y-8 text-text-primary/70 text-base leading-relaxed">
+        <div className="space-y-8 text-text-secondary text-base leading-relaxed">
           <p>
             DevLearn was built by developers, for developers. We noticed that most online learning platforms focus on quantity over quality — offering thousands of courses with little structure or depth.
           </p>

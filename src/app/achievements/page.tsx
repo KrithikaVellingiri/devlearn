@@ -121,57 +121,57 @@ export default async function AchievementsPage() {
         <Sidebar />
         <main className="flex-1 overflow-y-auto p-6 lg:p-12">
           <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-text-primary tracking-tight mb-2">Achievements</h1>
-          <p className="text-text-primary/60 text-sm">{unlocked.length} of {achievements.length} unlocked — keep going!</p>
-        </div>
-
-        {/* Progress bar */}
-        <div className="mb-12">
-          <div className="w-full bg-surface/50 rounded-full h-2.5 overflow-hidden border border-border/50">
-            <div className="bg-primary h-2.5 rounded-full transition-all duration-700" style={{ width: `${Math.round((unlocked.length / achievements.length) * 100)}%` }}></div>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-text-primary tracking-tight mb-2">Achievements</h1>
+            <p className="text-text-secondary text-sm">{unlocked.length} of {achievements.length} unlocked — keep going!</p>
           </div>
-        </div>
 
-        {/* Unlocked */}
-        {unlocked.length > 0 && (
-          <section className="mb-12">
-            <div className="flex items-center gap-3 mb-6"><div className="w-1.5 h-6 bg-primary rounded-full"></div><h2 className="text-2xl font-bold text-text-primary">Unlocked</h2></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-              {unlocked.map(a => (
-                <Card key={a.id} className={`bg-surface/60 border ${a.borderColor} hover:scale-[1.02] transition-all duration-300 cursor-default`}>
-                  <CardContent className="p-6 flex items-start gap-4">
-                    <div className={`w-14 h-14 rounded-xl ${a.bgColor} flex items-center justify-center shrink-0 ${a.color}`}>{a.icon}</div>
-                    <div>
-                      <h3 className="font-bold text-text-primary text-base mb-1">{a.title}</h3>
-                      <p className="text-xs text-text-primary/60">{a.description}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+          {/* Progress bar */}
+          <div className="mb-12">
+            <div className="w-full bg-surface/50 rounded-full h-2.5 overflow-hidden border border-border/50">
+              <div className="bg-primary h-2.5 rounded-full transition-all duration-700" style={{ width: `${Math.round((unlocked.length / achievements.length) * 100)}%` }}></div>
             </div>
-          </section>
-        )}
+          </div>
 
-        {/* Locked */}
-        {locked.length > 0 && (
-          <section>
-            <div className="flex items-center gap-3 mb-6"><div className="w-1.5 h-6 bg-border rounded-full"></div><h2 className="text-2xl font-bold text-text-primary/50">Locked</h2></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-              {locked.map(a => (
-                <Card key={a.id} className="bg-surface/20 border-border/30 opacity-60 cursor-default">
-                  <CardContent className="p-6 flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-surface/40 flex items-center justify-center shrink-0 text-text-primary/30">{a.icon}</div>
-                    <div>
-                      <h3 className="font-bold text-text-primary/50 text-base mb-1">{a.title}</h3>
-                      <p className="text-xs text-text-primary/40">{a.description}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-        )}
-      </main>
+          {/* Unlocked */}
+          {unlocked.length > 0 && (
+            <section className="mb-12">
+              <div className="flex items-center gap-3 mb-6"><div className="w-1.5 h-6 bg-primary rounded-full"></div><h2 className="text-2xl font-bold text-text-primary">Unlocked</h2></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                {unlocked.map(a => (
+                  <Card key={a.id} className={`bg-surface/60 border ${a.borderColor} hover:scale-[1.02] transition-all duration-300 cursor-default`}>
+                    <CardContent className="p-6 flex items-start gap-4">
+                      <div className={`w-14 h-14 rounded-xl ${a.bgColor} flex items-center justify-center shrink-0 ${a.color}`}>{a.icon}</div>
+                      <div>
+                        <h3 className="font-bold text-text-primary text-base mb-1">{a.title}</h3>
+                        <p className="text-xs text-text-secondary">{a.description}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Locked */}
+          {locked.length > 0 && (
+            <section>
+              <div className="flex items-center gap-3 mb-6"><div className="w-1.5 h-6 bg-border rounded-full"></div><h2 className="text-2xl font-bold text-text-secondary">Locked</h2></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                {locked.map(a => (
+                  <Card key={a.id} className="bg-surface/20 border-border/30 text-text-secondary cursor-default">
+                    <CardContent className="p-6 flex items-start gap-4">
+                      <div className="w-14 h-14 rounded-xl bg-surface/40 flex items-center justify-center shrink-0 text-text-secondary">{a.icon}</div>
+                      <div>
+                        <h3 className="font-bold text-text-secondary text-base mb-1">{a.title}</h3>
+                        <p className="text-xs text-text-secondary">{a.description}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
+        </main>
       </div>
     </div>
   );

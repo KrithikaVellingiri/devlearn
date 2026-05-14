@@ -80,169 +80,154 @@ export function MobileNav({ sessionEmail }: { sessionEmail?: string | null }) {
    */
   const drawerPortal = mounted
     ? createPortal(
-        <>
-          {/* Backdrop */}
-          <div
-            className={`fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
-              isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      <>
+        {/* Backdrop */}
+        <div
+          className={`fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
             }`}
-            onClick={closeMenu}
-            aria-hidden="true"
-          />
+          onClick={closeMenu}
+          aria-hidden="true"
+        />
 
-          {/* Slide-over panel — mounted at body level, truly viewport-fixed */}
-          <div
-            className={`fixed top-0 right-0 z-[9999] w-72 h-[100dvh] flex flex-col border-l shadow-2xl transition-transform duration-300 ease-in-out ${
-              isOpen ? "translate-x-0" : "translate-x-full"
+        {/* Slide-over panel — mounted at body level, truly viewport-fixed */}
+        <div
+          className={`fixed top-0 right-0 z-[9999] w-72 h-[100dvh] flex flex-col border-l shadow-2xl transition-transform duration-300 ease-in-out bg-white dark:bg-[#0A0D14] border-gray-200 dark:border-white/10 ${isOpen ? "translate-x-0" : "translate-x-full"
             }`}
-            style={{
-              backgroundColor: "var(--color-surface, #0F172A)",
-              borderColor: "var(--color-border, #1E293B)",
-            }}
-            aria-modal="true"
-            role="dialog"
-            aria-label="Navigation menu"
+          aria-modal="true"
+          role="dialog"
+          aria-label="Navigation menu"
+        >
+          {/* Panel header */}
+          <div
+            className="flex items-center justify-between p-4 border-b shrink-0 border-gray-200 dark:border-white/10"
           >
-            {/* Panel header */}
-            <div
-              className="flex items-center justify-between p-4 border-b shrink-0"
-              style={{ borderColor: "var(--color-border, #1E293B)" }}
+            <span className="font-bold text-xl tracking-tight text-text-primary flex items-center gap-1">
+              <span className="text-primary font-black">Dev</span>Learn
+            </span>
+            <button
+              onClick={closeMenu}
+              className="p-2 text-text-secondary hover:text-text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              aria-label="Close menu"
             >
-              <span className="font-bold text-xl tracking-tight text-text-primary flex items-center gap-1">
-                <span className="text-primary font-black">Dev</span>Learn
-              </span>
-              <button
-                onClick={closeMenu}
-                className="p-2 text-text-primary/70 hover:text-text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                aria-label="Close menu"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+              <X className="w-5 h-5" />
+            </button>
+          </div>
 
-            {/* Scrollable body */}
-            <div className="flex-1 overflow-y-auto flex flex-col">
-              {/* Primary nav */}
-              <nav className="flex flex-col py-4 px-3 gap-0.5">
-                {NAV.map((item) => {
-                  if (item.children) {
-                    const isParentActive = item.children.some((c) =>
-                      pathname.startsWith(c.href)
-                    );
-                    return (
-                      <div key={item.label}>
-                        <button
-                          onClick={() => setLpOpen((p) => !p)}
-                          className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-                            isParentActive
-                              ? "bg-primary/10 text-primary"
-                              : "text-text-primary/70 hover:text-text-primary hover:bg-text-primary/5"
-                          }`}
-                        >
-                          <span className="flex items-center gap-3">
-                            <item.icon className="w-4 h-4 shrink-0" />
-                            {item.label}
-                          </span>
-                          {lpOpen ? (
-                            <ChevronUp className="w-4 h-4 shrink-0" />
-                          ) : (
-                            <ChevronDown className="w-4 h-4 shrink-0" />
-                          )}
-                        </button>
-                        {lpOpen && (
-                          <div className="ml-7 mt-0.5 flex flex-col gap-0.5">
-                            {item.children.map((child) => (
-                              <Link
-                                key={child.href}
-                                href={child.href}
-                                onClick={closeMenu}
-                                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                                  pathname === child.href
-                                    ? "bg-primary/10 text-primary"
-                                    : "text-text-primary/60 hover:text-text-primary hover:bg-text-primary/5"
-                                }`}
-                              >
-                                <child.icon className="w-4 h-4 shrink-0" />
-                                {child.label}
-                              </Link>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  }
-
-                  const isActive = pathname === item.href;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href!}
-                      onClick={closeMenu}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-                        isActive
-                          ? "bg-primary/10 text-primary"
-                          : "text-text-primary/70 hover:text-text-primary hover:bg-text-primary/5"
-                      }`}
-                    >
-                      <item.icon className="w-4 h-4 shrink-0" />
-                      {item.label}
-                    </Link>
+          {/* Scrollable body */}
+          <div className="flex-1 overflow-y-auto flex flex-col">
+            {/* Primary nav */}
+            <nav className="flex flex-col py-4 px-3 gap-0.5">
+              {NAV.map((item) => {
+                if (item.children) {
+                  const isParentActive = item.children.some((c) =>
+                    pathname.startsWith(c.href)
                   );
-                })}
-              </nav>
-
-              {/* Spacer — pushes auth section to bottom */}
-              <div className="flex-1" />
-
-              {/* Auth section — pinned to bottom */}
-              <div
-                className="px-3 pb-6 pt-4 border-t flex flex-col gap-3 shrink-0"
-                style={{ borderColor: "var(--color-border, #1E293B)" }}
-              >
-                {sessionEmail ? (
-                  <>
-                    <div
-                      className="flex items-center gap-3 p-3 rounded-lg border"
-                      style={{
-                        backgroundColor: "var(--color-background, #020617)",
-                        borderColor: "var(--color-border, #1E293B)",
-                      }}
-                    >
-                      <div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(99,102,241,0.35)]">
-                        <span className="text-sm font-bold text-white leading-none">
-                          {sessionEmail[0].toUpperCase()}
+                  return (
+                    <div key={item.label}>
+                      <button
+                        onClick={() => setLpOpen((p) => !p)}
+                        className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${isParentActive
+                          ? "bg-primary/10 text-primary"
+                          : "text-gray-700 dark:text-gray-200 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                          }`}
+                      >
+                        <span className="flex items-center gap-3">
+                          <item.icon className="w-4 h-4 shrink-0" />
+                          {item.label}
                         </span>
-                      </div>
-                      <span className="text-sm font-semibold text-text-primary/80 truncate">
-                        {sessionEmail}
+                        {lpOpen ? (
+                          <ChevronUp className="w-4 h-4 shrink-0" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 shrink-0" />
+                        )}
+                      </button>
+                      {lpOpen && (
+                        <div className="ml-7 mt-0.5 flex flex-col gap-0.5">
+                          {item.children.map((child) => (
+                            <Link
+                              key={child.href}
+                              href={child.href}
+                              onClick={closeMenu}
+                              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === child.href
+                                ? "bg-primary/10 text-primary"
+                                : "text-gray-700 dark:text-gray-200 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                                }`}
+                            >
+                              <child.icon className="w-4 h-4 shrink-0" />
+                              {child.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href!}
+                    onClick={closeMenu}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-gray-700 dark:text-gray-200 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                      }`}
+                  >
+                    <item.icon className="w-4 h-4 shrink-0" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Spacer — pushes auth section to bottom */}
+            <div className="flex-1" />
+
+            {/* Auth section — pinned to bottom */}
+            <div
+              className="px-3 pb-6 pt-4 border-t flex flex-col gap-3 shrink-0 border-gray-200 dark:border-white/10"
+            >
+              {sessionEmail ? (
+                <>
+                  <div
+                    className="flex items-center gap-3 p-3 rounded-lg border bg-gray-50 dark:bg-[#020617] border-gray-200 dark:border-white/10"
+                  >
+                    <div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(99,102,241,0.35)]">
+                      <span className="text-sm font-bold text-white leading-none">
+                        {sessionEmail[0].toUpperCase()}
                       </span>
                     </div>
-                    <Link onClick={closeMenu} href="/auth/signout" className="w-full">
-                      <Button variant="secondary" className="w-full">
-                        Logout
-                      </Button>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link onClick={closeMenu} href="/auth/signin">
-                      <Button variant="ghost" className="w-full justify-center">
-                        Login
-                      </Button>
-                    </Link>
-                    <Link onClick={closeMenu} href="/auth/signin">
-                      <Button variant="primary" className="w-full justify-center">
-                        Sign Up
-                      </Button>
-                    </Link>
-                  </>
-                )}
-              </div>
+                    <span className="text-sm font-semibold text-text-primary/80 truncate">
+                      {sessionEmail}
+                    </span>
+                  </div>
+                  <Link onClick={closeMenu} href="/auth/signout" className="w-full">
+                    <Button variant="secondary" className="w-full">
+                      Logout
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link onClick={closeMenu} href="/auth/signin">
+                    <Button variant="ghost" className="w-full justify-center">
+                      Login
+                    </Button>
+                  </Link>
+                  <Link onClick={closeMenu} href="/auth/signin">
+                    <Button variant="primary" className="w-full justify-center">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
-        </>,
-        document.body
-      )
+        </div>
+      </>,
+      document.body
+    )
     : null;
 
   return (
@@ -250,7 +235,7 @@ export function MobileNav({ sessionEmail }: { sessionEmail?: string | null }) {
       {/* Toggle button — stays in the navbar DOM tree (just the button) */}
       <button
         onClick={() => setIsOpen((p) => !p)}
-        className="p-2 -mr-2 text-text-primary/70 hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary rounded-md"
+        className="p-2 -mr-2 text-text-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary rounded-md"
         aria-label={isOpen ? "Close menu" : "Open menu"}
         aria-expanded={isOpen}
         aria-controls="mobile-nav-panel"

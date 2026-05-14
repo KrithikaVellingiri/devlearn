@@ -15,7 +15,7 @@ export const StatsBanner = () => {
           {stats.map((stat, idx) => (
             <div key={idx} className="flex flex-col items-center justify-center text-center px-4">
               <p className="text-3xl md:text-5xl font-extrabold text-text-primary mb-3 tracking-tight">{stat.value}</p>
-              <p className="text-xs font-bold tracking-[0.2em] text-text-primary/60 uppercase">{stat.label}</p>
+              <p className="text-xs font-bold tracking-[0.2em] text-text-secondary uppercase">{stat.label}</p>
             </div>
           ))}
         </div>

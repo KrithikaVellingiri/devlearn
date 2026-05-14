@@ -122,10 +122,10 @@ export function CheckoutClient({ sessionEmail }: { sessionEmail?: string | null 
             <CheckCircle2 className="w-8 h-8 sm:w-12 sm:h-12 text-success" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-text-primary mb-3 tracking-tight">Purchase Successful</h2>
-          <p className="text-text-primary/60 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed max-w-sm mx-auto">
+          <p className="text-text-secondary text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed max-w-sm mx-auto">
             Your courses have been successfully unlocked and added to your curriculum.
           </p>
-          <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-text-primary/40 uppercase tracking-widest animate-pulse flex-wrap justify-center">
+          <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-text-secondary uppercase tracking-widest animate-pulse flex-wrap justify-center">
             <Loader2 className="w-4 h-4 animate-spin shrink-0" />
             <span>Redirecting to Dashboard</span>
           </div>
@@ -138,7 +138,7 @@ export function CheckoutClient({ sessionEmail }: { sessionEmail?: string | null 
     return (
       <div className="container mx-auto px-4 py-24 text-center">
         <h2 className="text-3xl font-extrabold text-text-primary mb-4">Your cart is empty</h2>
-        <p className="text-text-primary/60 mb-8 max-w-md mx-auto">
+        <p className="text-text-secondary mb-8 max-w-md mx-auto">
           You need items in your cart to checkout.
         </p>
         <Link href="/courses">
@@ -164,11 +164,11 @@ export function CheckoutClient({ sessionEmail }: { sessionEmail?: string | null 
                 <div>
                   <h3 className="font-bold text-lg text-text-primary mb-4">Contact Information</h3>
                   <div className="space-y-2">
-                    <label className="text-xs uppercase tracking-widest text-text-primary/60 font-semibold">Email Address</label>
+                    <label className="text-xs uppercase tracking-widest text-text-secondary font-semibold">Email Address</label>
                     <Input 
                       disabled 
                       value={sessionEmail || ""} 
-                      className="bg-background/50 border-border/50 text-text-primary/50" 
+                      className="bg-background/50 border-border/50 text-text-secondary" 
                     />
                   </div>
                 </div>
@@ -183,7 +183,7 @@ export function CheckoutClient({ sessionEmail }: { sessionEmail?: string | null 
                   
                   <div className="space-y-5">
                     <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-text-primary/60 font-semibold">Cardholder Name</label>
+                      <label className="text-xs uppercase tracking-widest text-text-secondary font-semibold">Cardholder Name</label>
                       <Input 
                         required
                         placeholder="John Doe" 
@@ -194,7 +194,7 @@ export function CheckoutClient({ sessionEmail }: { sessionEmail?: string | null 
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-text-primary/60 font-semibold">Card Number</label>
+                      <label className="text-xs uppercase tracking-widest text-text-secondary font-semibold">Card Number</label>
                       <Input 
                         required
                         placeholder="4242 4242 4242 4242" 
@@ -210,7 +210,7 @@ export function CheckoutClient({ sessionEmail }: { sessionEmail?: string | null 
 
                     <div className="grid grid-cols-2 gap-5">
                       <div className="space-y-2">
-                        <label className="text-xs uppercase tracking-widest text-text-primary/60 font-semibold">Expiry Date</label>
+                        <label className="text-xs uppercase tracking-widest text-text-secondary font-semibold">Expiry Date</label>
                         <Input 
                           required
                           placeholder="MM/YY" 
@@ -228,7 +228,7 @@ export function CheckoutClient({ sessionEmail }: { sessionEmail?: string | null 
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs uppercase tracking-widest text-text-primary/60 font-semibold">CVV</label>
+                        <label className="text-xs uppercase tracking-widest text-text-secondary font-semibold">CVV</label>
                         <Input 
                           required
                           type="password"
@@ -280,7 +280,7 @@ export function CheckoutClient({ sessionEmail }: { sessionEmail?: string | null 
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-sm font-bold text-text-primary truncate">{item.title}</h4>
-                      <p className="text-xs text-text-primary/60">{formatPrice(item.price)}</p>
+                      <p className="text-xs text-text-secondary">{formatPrice(item.price)}</p>
                     </div>
                   </div>
                 ))}
@@ -288,7 +288,7 @@ export function CheckoutClient({ sessionEmail }: { sessionEmail?: string | null 
 
               <div className="border-t border-border/50 pt-6 space-y-4 text-sm">
                 <div className="flex justify-between items-center">
-                  <span className="text-text-primary/70">Subtotal</span>
+                  <span className="text-text-secondary">Subtotal</span>
                   <span className="font-semibold text-text-primary">{formatPrice(subtotal)}</span>
                 </div>
                 {discount > 0 && (

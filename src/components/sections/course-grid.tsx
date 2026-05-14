@@ -71,7 +71,7 @@ export const CourseGrid: React.FC<CourseGridProps> = ({ title, courses, showIcon
                   onClick={() => setSortBy(s.value)}
                   className={`px-3 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md transition-all whitespace-nowrap ${sortBy === s.value
                     ? 'bg-primary/20 text-primary shadow-sm ring-1 ring-primary/30'
-                    : 'text-text-primary/60 hover:text-text-primary hover:bg-surface'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-surface'
                     }`}>
                   {s.label}
                 </button>
@@ -80,7 +80,7 @@ export const CourseGrid: React.FC<CourseGridProps> = ({ title, courses, showIcon
           )}
 
           {!showIcon && (
-            <a href="/courses" className="text-xs font-medium text-text-primary/70 hover:text-text-primary transition-colors flex items-center gap-1 uppercase tracking-wider whitespace-nowrap">
+            <a href="/courses" className="text-xs font-medium text-text-secondary hover:text-text-primary transition-colors flex items-center gap-1 uppercase tracking-wider whitespace-nowrap">
               View all <span>&rarr;</span>
             </a>
           )}
@@ -89,9 +89,9 @@ export const CourseGrid: React.FC<CourseGridProps> = ({ title, courses, showIcon
       
       {sortedCourses.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center border border-dashed border-border/50 rounded-2xl bg-surface/30">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-text-primary/30 mb-4"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-text-secondary mb-4"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
           <h3 className="text-xl font-medium text-text-primary mb-2">{emptyMessage || "No courses found."}</h3>
-          <p className="text-text-primary/60 max-w-md">Check back later or explore other topics.</p>
+          <p className="text-text-secondary max-w-md">Check back later or explore other topics.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
