@@ -3,6 +3,7 @@
 > *Learn. Build. Grow. The platform engineered for the modern software architect.*
 
 [![Live Demo](https://devlearn-two.vercel.app/)
+https://devlearn-two.vercel.app/
 
 DevLearn is a modern, full-stack educational platform built from the ground up for developers and software engineers. Moving beyond generic course catalogs, DevLearn offers a structured, hands-on learning experience focused on advanced technical domains such as Distributed Systems, Microservices Architecture, and System Design.
 
