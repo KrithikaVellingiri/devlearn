@@ -1,135 +1,139 @@
-# DevLearn
+# DevLearn — Precision-Engineered Technical Education
 
-**A modern e-commerce platform for discovering and purchasing tech courses.**
+> *Learn. Build. Grow. The platform engineered for the modern software architect.*
 
----
+[![Live Demo](https://devlearn-two.vercel.app/)
 
-## Description
+DevLearn is a modern, full-stack educational platform built from the ground up for developers and software engineers. Moving beyond generic course catalogs, DevLearn offers a structured, hands-on learning experience focused on advanced technical domains such as Distributed Systems, Microservices Architecture, and System Design.
 
-DevLearn is a full-stack course marketplace where users can browse, purchase, and track progress through a curated catalog of technology courses. The platform is designed around a real-world e-commerce flow — from course discovery and filtering through checkout and enrollment — with a clean, performant interface built on the Next.js App Router.
-
----
-
-## Features
-
-- Browse and search a catalog of tech courses
-- Filter courses by category, price range, and rating
-- Detailed course pages with curriculum breakdowns and user reviews
-- Add to cart and complete a checkout flow
-- User authentication via credentials and Google OAuth
-- Personal dashboard to view enrolled courses and track learning progress
+Designed with a premium, dual-mode (Light/Dark) aesthetic and engineered for performance, this platform serves as an interactive curriculum hub equipped with progress tracking, achievement systems, and secure commerce workflows.
 
 ---
 
-## Tech Stack
+## ✨ Key Features
 
-### Frontend
+- **Advanced Curriculum Delivery:** Structured learning paths for complex topics (e.g., Kafka Event Streaming, Scalable Go Microservices).
+- **Comprehensive E-Commerce Flow:** Robust cart and checkout system with strict enrollment verification to prevent redundant course purchases.
+- **Dynamic Learning Dashboard:** Personalized student overview featuring streaks, achievements, and course progress tracking.
+- **Premium Dual-Mode UI/UX:** Precision-crafted dark and light mode aesthetics utilizing advanced Tailwind CSS utility classes for optimal readability, high contrast, and a sleek developer-focused UI.
+- **Robust Authentication:** Secure session management and user authentication powered by Next-Auth and Supabase.
+- **Responsive Architecture:** Fully responsive layout with mobile-optimized slide-over navigation and adaptive grid layouts.
 
-| Technology | Purpose |
-|---|---|
-| Next.js (App Router) | Framework and routing |
-| TypeScript | Type safety across the codebase |
-| Tailwind CSS | Utility-first styling |
+## 🛠️ Tech Stack
 
-### State & Data
+### Frontend & Core
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router)
+- **Library:** [React 19](https://react.dev/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/)
 
-| Technology | Purpose |
-|---|---|
-| Zustand | Global client-side state management |
-| TanStack React Query | Server state, caching, and data fetching |
+### State Management & Data Fetching
+- **Client State:** [Zustand](https://zustand-demo.pmnd.rs/) for lightweight, scalable local state.
+- **Server State:** [TanStack React Query](https://tanstack.com/query/latest) for declarative, cached data fetching.
 
-### Backend & Auth
+### Backend, Auth & Database
+- **Database / BaaS:** [Supabase](https://supabase.com/)
+- **Authentication:** [Next-Auth](https://next-auth.js.org/)
 
-| Technology | Purpose |
-|---|---|
-| Supabase | Database, storage, and real-time backend |
-| NextAuth.js | Authentication with credentials and OAuth providers |
+### UI Utilities
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **Notifications:** [Sonner](https://sonner.emilkowal.ski/) (Toast notifications)
 
-### Other
+## 📸 Screenshots
 
-| Technology | Purpose |
-|---|---|
-| Axios | HTTP client for API requests |
-| Lucide React | Icon library |
+*(Replace placeholders with actual project screenshots)*
 
-### Deployment
+| Dashboard Overview | Course Details |
+| :---: | :---: |
+| ![Dashboard Overview Placeholder](./public/screenshots/dashboard.png) | ![Course Placeholder](./public/screenshots/course-page.png) |
 
-| Platform | Purpose |
-|---|---|
-| Vercel | Hosting and CI/CD |
+| Learning Paths | Dark/Light Mode |
+| :---: | :---: |
+| ![Learning Path Placeholder](./public/screenshots/learning-path.png) | ![Theme Placeholder](./public/screenshots/theme-toggle.png) |
 
----
+## 📂 Project Structure
 
-## Project Structure
-
+```text
+devlearn/
+├── src/
+│   ├── app/                 # Next.js App Router (Pages, Layouts, API Routes)
+│   │   ├── auth/            # Login, Signup, Session management
+│   │   ├── cart/            # Shopping cart flow
+│   │   ├── courses/         # Course catalog and individual course pages
+│   │   ├── dashboard/       # User learning dashboard
+│   │   ├── learning-path/   # Curated curriculum paths
+│   │   └── ...
+│   ├── components/          # Reusable UI components
+│   │   ├── course/          # Course-specific modular components
+│   │   ├── layout/          # Navbar, Sidebar, Footer, Cards
+│   │   ├── sections/        # Page sections (Hero, Features, etc.)
+│   │   └── ui/              # Primitive components (Buttons, Inputs, etc.)
+│   └── types/               # Global TypeScript definitions
+├── public/                  # Static assets (images, icons)
+├── tailwind.config.ts       # Tailwind CSS configuration
+└── package.json             # Dependencies and scripts
 ```
-src/
-├── components/     # Reusable UI components
-├── hooks/          # Custom React hooks (data fetching, UI logic)
-├── lib/            # Third-party client setup (Supabase, Auth, Query)
-├── services/       # API call abstractions and service layer
-└── types/          # Shared TypeScript interfaces and type definitions
-```
 
----
-
-## Getting Started
+## 🚀 Setup & Installation
 
 ### Prerequisites
+- Node.js (v20+)
+- npm or yarn
+- A Supabase account
 
-- Node.js 18 or later
-- npm or a compatible package manager
+### Installation Steps
 
-### Installation
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/devlearn.git
+   cd devlearn
+   ```
 
-```bash
-# Clone the repository
-git clone https://github.com/your-username/devlearn.git
-cd devlearn
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-# Install dependencies
-npm install
+3. **Configure Environment Variables:**
+   Create a `.env.local` file in the root directory and add the necessary variables:
+   ```env
+   # Next Auth Configuration
+   NEXTAUTH_URL="http://localhost:3000"
+   NEXTAUTH_SECRET="your_nextauth_secret"
 
-# Start the development server
-npm run dev
-```
+   # Supabase Configuration
+   NEXT_PUBLIC_SUPABASE_URL="your_supabase_project_url"
+   NEXT_PUBLIC_SUPABASE_ANON_KEY="your_supabase_anon_key"
+   ```
 
-The application will be available at `http://localhost:3000`.
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open the application:**
+   Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🧠 Engineering Challenges & Learning Outcomes
+
+- **Dual-Mode UI Architecture:** Transitioning from a hardcoded dark-mode to a fully responsive, dual-theme architecture required careful restructuring of CSS variables and Tailwind utility classes. This ensured optimal contrast and readability in light mode while maintaining a premium dark mode aesthetic without duplicating components.
+- **E-Commerce Data Integrity:** Implementing strict enrollment verification to prevent redundant course purchases. This involved complex state synchronization between the cart (Zustand), server data (React Query), and the database (Supabase) to gracefully handle edge cases and provide real-time user feedback via toasts.
+- **Client/Server Component Hybridization:** Maximizing performance in Next.js 16 by strategically splitting components into server-rendered pages for SEO/speed and client-side components for interactivity (e.g., shopping cart, theme toggling).
+
+## 🔮 Future Improvements
+
+- **Interactive Code Environments:** Integrating web-based sandboxes (like WebContainers) for true "Learn by Building" capabilities directly in the browser.
+- **AI-Powered Recommendations:** Implementing personalized course suggestions based on user completion data and career goals.
+- **B2B / Enterprise Portal:** Creating specialized dashboard views for team managers to track employee upskilling metrics.
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+Feel free to check the [issues page](https://github.com/your-username/devlearn/issues).
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-
-## Environment Variables
-
-Create a `.env.local` file in the root of the project and add the following variables:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-> **Important:** Never commit `.env.local` or any file containing secret keys to version control. The `.gitignore` already excludes `.env*.local` by default.
-
----
-
-## Deployment
-
-This project is deployed on [Vercel](https://vercel.com). To deploy your own instance:
-
-1. Push the repository to GitHub.
-2. Import the project into Vercel.
-3. Add the required environment variables in the Vercel project settings.
-4. Deploy.
-
-Vercel will automatically handle builds and deployments on every push to the main branch.
-
----
-
-## Future Improvements
-
-- Integrated payment processing via Stripe
-- User-submitted course reviews and ratings
-- Personalized course recommendations based on enrollment history
-- Instructor dashboard for course creation and analytics
-- Wishlists and saved courses
-- Certificate generation on course completion
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*Built with precision and passion for the developer community.*
