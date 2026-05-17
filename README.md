@@ -2,8 +2,11 @@
 
 > *Learn. Build. Grow. The platform engineered for the modern software architect.*
 
-[![Live Demo](https://devlearn-two.vercel.app/)
-https://devlearn-two.vercel.app/
+[![Live Demo](https://img.shields.io/badge/Demo-Live%20Now-success?style=for-the-badge&logo=vercel)](https://devlearn-two.vercel.app/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
 
 DevLearn is a modern, full-stack educational platform built from the ground up for developers and software engineers. Moving beyond generic course catalogs, DevLearn offers a structured, hands-on learning experience focused on advanced technical domains such as Distributed Systems, Microservices Architecture, and System Design.
 
